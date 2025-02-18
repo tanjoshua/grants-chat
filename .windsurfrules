@@ -1,0 +1,20 @@
+This is a LLM chat application built with Next.js.
+
+## Directories
+- `src/`: source code
+- `tasks/`: files to plan features and tasks, as well as track progress
+
+## Development tools
+For all UI development:
+- Use shadcn/ui as the primary component library
+- Follow shadcn/ui's design patterns and theming system
+- Leverage shadcn's pre-built components before creating custom ones
+- Maintain consistency with shadcn's styling approach using Tailwind CSS
+
+For all AI/LLM related development:
+- Use Vercel AI SDK (ai package) for handling AI interactions
+- Follow Vercel AI SDK patterns for API routes and error handling
+- Utilize Vercel AI SDK's built-in TypeScript types
+- Refer to llms/vercel-ai-sdk.txt for more information about the AI sdk
+
+These tools should be the default choice unless there's a specific requirement that cannot be met using them.
