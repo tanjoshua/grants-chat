@@ -37,7 +37,6 @@ The chat interface now features a modern, sleek design with improved user experi
   - "AI is thinking..." indicator with spinner
   - Indicator shows only while waiting for first response token
   - Disabled input and send button during loading
-- [ ] Basic animations for new messages
 
 ### 3. Responsive Design
 - [x] Mobile-friendly layout with max-width containers

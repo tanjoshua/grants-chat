@@ -24,3 +24,4 @@ For all AI/LLM related development:
 These tools should be the default choice unless there's a specific requirement that cannot be met using them.
 
 ## Writing features
+- When writing features, update the files in the planning directory to track progress, and also provide helpful context and notes for developers seeking to understand the project.
