@@ -11,8 +11,8 @@ Implement Retrieval Augmented Generation to enhance chat responses with relevant
 ## Implementation Steps
 
 1. Local Development Setup [COMPLETED]
-   - Docker compose setup for local PostgreSQL + pgvector ✅
-   - Testing and Verification ✅
+   - Docker compose setup for local PostgreSQL + pgvector 
+   - Testing and Verification 
      * Docker container running with pgvector extension
      * Database migrations successfully applied
      * Tables created and verified
@@ -20,24 +20,50 @@ Implement Retrieval Augmented Generation to enhance chat responses with relevant
      * Using `ankane/pgvector` image for vector similarity search
      * Exposed on port 5432
      * Persistent volume for data storage
-   - Dependencies installation ✅
+   - Dependencies installation 
      * Using `drizzle-orm` for type-safe database operations
      * `@neondatabase/serverless` for optimized database connections
      * Vector operations supported through `pgvector`
-   - Environment variables configuration ✅
+   - Environment variables configuration 
      * Using Next.js built-in env support via `.env.local`
      * Local database URL configured
    - Database Configuration ✅
      * Schema defined with proper types and vector support
+     * Added document management fields (filename, status, updatedAt)
+     * Migration applied successfully
      * Drizzle configured for PostgreSQL dialect
      * Serverless-optimized database client setup
-   - Local development documentation ✅
+   - Local development documentation 
 
 2. Vector Storage Implementation
    - Implement document ingestion pipeline
+     * Document upload interface ✅
+       - Created DocumentUpload component with shadcn/ui FileInput
+       - Added form validation using react-hook-form and zod
+       - Implemented file upload handling
+       - Added success/error toast notifications
+       - Improved loading states and user feedback
+       - Enhanced error handling and display
+     * Document management page ✅
+       - Created /documents route with upload interface
+       - Added navigation component for easy access
+       - Prepared layout for document list view
+     * API routes for document management
+       - POST /api/documents/upload ✅ (Mock implementation)
+         * Returns dummy success response
+         * Database integration pending
+       - GET /api/documents (Pending)
+       - DELETE /api/documents/:id (Pending)
+     * Document list view (Pending)
+       - Will show filename, date, status
+     * Database integration (Pending)
+       - Implement document storage
+       - Handle file content processing
+       - Add error handling for DB operations
+       - Add delete functionality
+       - Show processing status
    - Create embedding generation using OpenAI embeddings
    - Store embeddings in pgvector
-   - Add API routes for document upload
 
 3. RAG Integration
    - Implement similarity search using pgvector
@@ -64,35 +90,38 @@ The database schema consists of two main tables:
 
 1. `documents` table:
    - `id`: UUID primary key with auto-generation
+   - `filename`: VARCHAR(255) for original filename
    - `content`: Text field for document content
    - `metadata`: JSONB field for flexible metadata storage
+     * fileType: Original file type
+     * size: File size in bytes
+     * chunkCount: Number of chunks generated
+   - `status`: VARCHAR(50) for processing status (pending, processing, completed, error)
    - `createdAt`: Timestamptz for creation time
+   - `updatedAt`: Timestamptz for last update
 
 2. `embeddings` table:
    - `id`: UUID primary key with auto-generation
-   - `documentId`: UUID foreign key to documents
+   - `documentId`: UUID foreign key to documents (with CASCADE delete)
+   - `chunkIndex`: Integer for chunk order
+   - `chunkContent`: Text field for the actual chunk content
    - `embedding`: Vector(1536) for OpenAI embeddings
    - `createdAt`: Timestamptz for creation time
 
-### Database Configuration
-1. Local Development:
-   - Docker container running PostgreSQL with pgvector
-   - Database: rag_dev
-   - Default credentials for local dev
-   - Persistent volume for data retention
+This schema design supports:
+- Document upload and processing
+- Automatic cleanup of embeddings when documents are deleted
+- Processing status tracking
+- Efficient vector similarity search
 
-2. Connection Setup:
-   - Using Neon's serverless driver for optimal performance
-   - Edge-compatible database client
-   - Automatic connection management
-   - No connection pooling needed
+## Future Enhancements
 
-3. Type Safety:
-   - Full TypeScript support via Drizzle ORM
-   - Automatic type inference for queries
-   - Vector operations type-safety
-   - Runtime type checking enabled
-```
+1. Direct Text Input Support
+   - Add text input interface using shadcn/ui Textarea
+   - Extend schema to support text content type
+   - Add API endpoint for text input
+   - Update UI to handle both document and text content
+   - Modify processing pipeline for text input
 
 ## Database Tooling
 

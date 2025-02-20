@@ -10,7 +10,7 @@ For all UI development:
 - Use shadcn/ui as the primary component library
 - Follow shadcn/ui's design patterns and theming system
 - Leverage shadcn's pre-built components before creating custom ones
-- If the component has not been imported into the project yet, use `npx shadcn@latest add <component>` to add it.
+- If the component has not been imported into the project yet in the `src/components/ui` directory, use `npx shadcn@latest add <component>` to add it.
 - Avoid overriding shadcn's default styles, unless necessary
 - Maintain consistency with shadcn's styling approach using Tailwind CSS
 - Use shadcn's built-in variant props when relevant and appropriate
