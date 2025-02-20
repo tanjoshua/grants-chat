@@ -1,5 +1,4 @@
 import { pgTable, uuid, text, jsonb, timestamp, vector } from 'drizzle-orm/pg-core';
-import type { z } from 'zod';
 
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
