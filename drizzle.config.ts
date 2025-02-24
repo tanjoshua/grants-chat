@@ -1,3 +1,4 @@
+import '@/config/env';
 import type { Config } from 'drizzle-kit';
 
 export default {
@@ -5,7 +6,7 @@ export default {
   out: './src/db/migrations',
   dialect: "postgresql",
   dbCredentials: {
-    url: process.env.DATABASE_URL ?? 'postgres://postgres:postgres@localhost:5432/rag_dev'
+    url: process.env.DATABASE_URL!
   },
   verbose: true,
   strict: true
