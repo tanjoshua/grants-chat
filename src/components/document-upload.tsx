@@ -7,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 import { Loader2, Upload } from 'lucide-react';
 import * as z from 'zod';
 
@@ -26,6 +27,7 @@ const ACCEPTED_FILE_TYPES = [
 export function DocumentUpload() {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema)
@@ -59,6 +61,9 @@ export function DocumentUpload() {
         title: 'Success',
         description: `${data.file.name} uploaded successfully`,
       });
+      
+      // Refresh the page to update the document list
+      router.refresh();
     } catch (error) {
       console.error('Error uploading document:', error);
       form.setError('file', { 
