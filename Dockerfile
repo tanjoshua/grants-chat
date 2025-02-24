@@ -1,10 +1,20 @@
 FROM gdssingapore/airbase:node-22-builder AS builder
+
+# Build arguments
+ARG DATABASE_URL
+ARG OPENAI_API_KEY
+
+# Set environment variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV SKIP_ENV_VALIDATION=1
-ENV DATABASE_URL=DATABASE_URL
-ENV OPENAI_API_KEY=OPENAI_API_KEY
+ENV DATABASE_URL=$DATABASE_URL
+ENV OPENAI_API_KEY=$OPENAI_API_KEY
+
+# Install dependencies
 COPY package.json package-lock.json ./
 RUN npm install
+
+# Copy source code
 COPY . ./
 RUN npm run build
 
