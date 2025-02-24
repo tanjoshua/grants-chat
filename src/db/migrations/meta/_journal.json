@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1739958811955,
-      "tag": "0000_clever_mongoose",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1740022782840,
-      "tag": "0001_yummy_bastion",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1740363728975,
-      "tag": "0002_old_steve_rogers",
+      "when": 1740383542927,
+      "tag": "0000_ancient_the_leader",
       "breakpoints": true
     }
   ]

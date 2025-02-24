@@ -1,5 +1,5 @@
 import { streamText, tool } from 'ai';
-import { AI_MODEL, SYSTEM_PROMPT } from '@/config/ai';
+import { AI_MODEL, GRANTS_SYSTEM_PROMPT } from '@/config/ai';
 import { z } from 'zod';
 import { findRelevantContent } from '@/lib/ai/embedding';
 
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: AI_MODEL,
-    system: SYSTEM_PROMPT,
+    system: GRANTS_SYSTEM_PROMPT,
     messages,
     tools: {
       getInformation: tool({

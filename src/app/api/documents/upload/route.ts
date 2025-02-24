@@ -26,7 +26,13 @@ export async function POST(request: Request) {
     }
 
     // Read file content
-    const content = await file.text();
+    // Read and clean file content
+    let content = await file.text();
+    
+    // Remove null bytes and invalid UTF-8 characters
+    content = content
+      .replace(/\u0000/g, '') // Remove null bytes
+      .replace(/[^\x20-\x7E\x0A\x0D]/g, ' '); // Keep only printable ASCII, newlines and carriage returns
 
     // Create document record
     const [document] = await db.insert(documents).values({
