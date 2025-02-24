@@ -1,5 +1,7 @@
-import { streamText } from 'ai';
+import { streamText, tool } from 'ai';
 import { AI_MODEL, SYSTEM_PROMPT } from '@/config/ai';
+import { z } from 'zod';
+import { findRelevantContent } from '@/lib/ai/embedding';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -11,6 +13,17 @@ export async function POST(req: Request) {
     model: AI_MODEL,
     system: SYSTEM_PROMPT,
     messages,
+    tools: {
+      getInformation: tool({
+        description: `get information from your knowledge base to answer questions.`,
+        parameters: z.object({
+          question: z.string().describe('the users question'),
+        }),
+        execute: async ({ question }) => findRelevantContent(question),
+      }),
+    },
+    toolCallStreaming: true,
+    maxSteps: 3,
   });
 
   return result.toDataStreamResponse();

@@ -9,11 +9,11 @@ import { useEffect, useRef } from 'react';
 import { Loader2 } from "lucide-react";
 
 export default function Page() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading} = useChat({
     api: "/api/chat",
   });
 
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  // const scrollAreaRef = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   // Scroll to bottom when new messages are added or updated
@@ -38,8 +38,11 @@ export default function Page() {
         {/* Messages Area */}
         <ScrollArea className="flex-1">
           <div className="space-y-6 max-w-3xl mx-auto p-4">
-            {messages.map((message, index) => (
-              <div
+            {messages.map((message, index) => {
+              if (message.content) {
+                console.log('returning message content', message.content)
+
+              return <div
                 key={message.id}
                 ref={index === messages.length - 1 ? lastMessageRef : null}
                 className={cn(
@@ -60,7 +63,33 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ))}
+              }
+
+              return <div key={message.id}>
+                {message.parts?.map((part, index) => {
+                  switch (part.type) {
+                    case 'text': 
+                    return <p key={index}>{part.text}</p>
+                    case 'tool-invocation': 
+                    const toolCall = part.toolInvocation;
+                    switch (toolCall.toolName) {
+                      case 'getInformation': {
+                        return (
+                          <div className="flex justify-start" key={index}>
+                            <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12 flex items-center gap-2">
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              <span className="text-sm">Searching documents...</span>
+                            </div>
+                          </div>
+                        );
+                      }
+                      
+                    }
+                  }
+                })}
+              </div>
+            }
+            )}
             {isThinking && (
               <div className="flex justify-start">
                 <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12 flex items-center gap-2">
