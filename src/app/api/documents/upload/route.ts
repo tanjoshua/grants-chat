@@ -1,4 +1,17 @@
 import { NextResponse } from 'next/server';
+import { db } from '@/db';
+import { documents, embeddings } from '@/db/schema';
+import { EMBEDDING_MODEL } from '@/config/ai';
+import { embedMany } from 'ai';
+import { eq } from 'drizzle-orm';
+
+const generateChunks = (input: string): string[] => {
+  return input
+    .trim()
+    .split('.')
+    .filter(i => i !== '');
+};
+
 
 export async function POST(request: Request) {
   try {
@@ -12,23 +25,68 @@ export async function POST(request: Request) {
       );
     }
 
-    // TODO: Implement actual file processing and database storage
-    return NextResponse.json({
-      message: 'Document uploaded successfully',
-      document: {
-        id: 'dummy-id',
-        filename: file.name,
-        status: 'pending',
-        metadata: {
-          fileType: file.type,
-          size: file.size
-        }
+    // Read file content
+    const content = await file.text();
+
+    // Create document record
+    const [document] = await db.insert(documents).values({
+      filename: file.name,
+      content,
+      status: 'processing',
+      metadata: {
+        fileType: file.type,
+        size: file.size
       }
-    });
+    }).returning();
+
+    try {
+      // Generate embedding
+      const chunks = generateChunks(content);
+
+      const { embeddings: embeddingsResult } = await embedMany({
+        model: EMBEDDING_MODEL,
+        values: chunks,
+      });
+
+      // Store embedding
+    await db.insert(embeddings).values(
+      embeddingsResult.map((embedding, embeddingIndex) => ({
+        documentId: document.id,
+        content: chunks[embeddingIndex],
+        embedding: embedding
+      })),
+    );
+
+      // Update document status
+      await db
+        .update(documents)
+        .set({ status: 'ready' })
+        .where(eq(documents.id, document.id));
+
+      return NextResponse.json({
+        message: 'Document uploaded and processed successfully',
+        document: {
+          id: document.id,
+          filename: document.filename,
+          status: 'ready',
+          metadata: document.metadata
+        }
+      });
+
+    } catch (error) {
+      // Update document status on error
+      await db
+        .update(documents)
+        .set({ status: 'error' })
+        .where(eq(documents.id, document.id));
+
+      throw error;
+    }
+
   } catch (error) {
-    console.error('Error uploading document:', error);
+    console.error('Error processing document:', error);
     return NextResponse.json(
-      { error: 'Failed to upload document' },
+      { error: 'Failed to process document' },
       { status: 500 }
     );
   }

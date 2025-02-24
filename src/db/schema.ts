@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, jsonb, timestamp, vector } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, jsonb, timestamp, vector,index } from 'drizzle-orm/pg-core';
 
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -13,9 +13,17 @@ export const documents = pgTable('documents', {
 export const embeddings = pgTable('embeddings', {
   id: uuid('id').primaryKey().defaultRandom(),
   documentId: uuid('document_id').references(() => documents.id),
-  embedding: vector('embedding', { dimensions: 1536 }),
+  content: text('content').notNull(),
+  embedding: vector('embedding', { dimensions: 1536 }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
-});
+},
+table => ({
+  embeddingIndex: index('embeddingIndex').using(
+    'hnsw',
+    table.embedding.op('vector_cosine_ops'),
+  ),
+}),
+);
 
 // Modern way to infer types in Drizzle
 export type Document = typeof documents.$inferSelect;

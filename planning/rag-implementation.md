@@ -49,21 +49,24 @@ Implement Retrieval Augmented Generation to enhance chat responses with relevant
        - Added navigation component for easy access
        - Prepared layout for document list view
      * API routes for document management
-       - POST /api/documents/upload ✅ (Mock implementation)
-         * Returns dummy success response
-         * Database integration pending
+       - POST /api/documents/upload ✅
+         * Implemented file content extraction
+         * Added document storage in PostgreSQL
+         * Integrated OpenAI embeddings generation
+         * Added vector storage with pgvector
+         * Implemented error handling and status updates
+         * Added content chunking for better context
        - GET /api/documents (Pending)
        - DELETE /api/documents/:id (Pending)
      * Document list view (Pending)
        - Will show filename, date, status
-     * Database integration (Pending)
-       - Implement document storage
-       - Handle file content processing
-       - Add error handling for DB operations
-       - Add delete functionality
-       - Show processing status
-   - Create embedding generation using OpenAI embeddings
-   - Store embeddings in pgvector
+     * Database integration ✅
+       - Document storage implemented with status tracking
+       - Content processing with chunking
+       - Error handling for DB operations
+       - Processing status updates
+   - Create embedding generation using OpenAI embeddings ✅
+   - Store embeddings in pgvector ✅
 
 3. RAG Integration
    - Implement similarity search using pgvector
@@ -90,15 +93,22 @@ The database schema consists of two main tables:
 
 1. `documents` table:
    - `id`: UUID primary key with auto-generation
-   - `filename`: VARCHAR(255) for original filename
+   - `filename`: Text field for original filename
    - `content`: Text field for document content
    - `metadata`: JSONB field for flexible metadata storage
      * fileType: Original file type
      * size: File size in bytes
-     * chunkCount: Number of chunks generated
-   - `status`: VARCHAR(50) for processing status (pending, processing, completed, error)
-   - `createdAt`: Timestamptz for creation time
-   - `updatedAt`: Timestamptz for last update
+   - `status`: Text field for processing status (processing, ready, error)
+   - `createdAt`: Timestamp with timezone for creation time
+   - `updatedAt`: Timestamp with timezone for last update
+
+2. `embeddings` table:
+   - `id`: UUID primary key with auto-generation
+   - `documentId`: UUID foreign key referencing documents.id
+   - `content`: Text field for chunk content
+   - `embedding`: Vector(1536) for OpenAI embeddings
+   - `createdAt`: Timestamp with timezone for creation time
+   - Added HNSW index for efficient vector similarity search
 
 2. `embeddings` table:
    - `id`: UUID primary key with auto-generation

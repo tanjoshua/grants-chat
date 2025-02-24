@@ -15,6 +15,13 @@
       "when": 1740022782840,
       "tag": "0001_yummy_bastion",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1740363728975,
+      "tag": "0002_old_steve_rogers",
+      "breakpoints": true
     }
   ]
 }
