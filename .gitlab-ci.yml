@@ -38,11 +38,6 @@ production:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
     AIRBASE_ENVIRONMENT: default
-    DATABASE_URL: $DATABASE_URL
-    OPENAI_API_KEY: $OPENAI_API_KEY
-    DOCKER_BUILD_ARGS: >
-      --build-arg DATABASE_URL=$DATABASE_URL
-      --build-arg OPENAI_API_KEY=$OPENAI_API_KEY
   environment:
     name: production
     deployment_tier: staging
