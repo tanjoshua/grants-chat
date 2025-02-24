@@ -56,10 +56,21 @@ Implement Retrieval Augmented Generation to enhance chat responses with relevant
          * Added vector storage with pgvector
          * Implemented error handling and status updates
          * Added content chunking for better context
-       - GET /api/documents (Pending)
-       - DELETE /api/documents/:id (Pending)
-     * Document list view (Pending)
-       - Will show filename, date, status
+       - GET /api/documents ✅
+         * Server-side document fetching
+         * Sorted by creation date
+         * Includes metadata and status
+       - DELETE /api/documents/:id ✅
+         * Implemented as server action
+         * Cascading delete for embeddings
+         * Status-aware deletion
+         * Toast notifications
+     * Document list view ✅
+       - Shows filename, date, status
+       - Displays file size with formatting
+       - Shows relative upload time
+       - Status-aware delete button
+       - Processing state handling
      * Database integration ✅
        - Document storage implemented with status tracking
        - Content processing with chunking
@@ -104,14 +115,27 @@ The database schema consists of two main tables:
 
 2. `embeddings` table:
    - `id`: UUID primary key with auto-generation
-   - `documentId`: UUID foreign key referencing documents.id
+   - `documentId`: UUID foreign key referencing documents.id (with CASCADE delete)
    - `content`: Text field for chunk content
    - `embedding`: Vector(1536) for OpenAI embeddings
    - `createdAt`: Timestamp with timezone for creation time
    - Added HNSW index for efficient vector similarity search
 
-2. `embeddings` table:
-   - `id`: UUID primary key with auto-generation
+### Implementation Details
+
+1. Document Management:
+   - Server-side document fetching for better performance
+   - Server actions for document operations
+   - Optimistic updates with toast notifications
+   - Proper error handling and status tracking
+   - Cascade deletion of embeddings
+
+2. UI Components:
+   - Responsive document list with shadcn/ui Table
+   - Status indicators with color-coded badges
+   - Ghost buttons for actions
+   - Processing state handling
+   - User-friendly timestamps and file sizes
    - `documentId`: UUID foreign key to documents (with CASCADE delete)
    - `chunkIndex`: Integer for chunk order
    - `chunkContent`: Text field for the actual chunk content

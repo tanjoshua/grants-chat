@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Table,
   TableBody,
@@ -7,7 +9,11 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Trash2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 interface Document {
   id: string;
@@ -44,7 +50,34 @@ function getStatusColor(status: string): string {
   }
 }
 
-export function DocumentList({ documents }: { documents: Document[] }) {
+export function DocumentList({ 
+  documents,
+  deleteDocument 
+}: { 
+  documents: Document[],
+  deleteDocument: (id: string) => Promise<{ success: boolean }>
+}) {
+  const router = useRouter();
+  const { toast } = useToast();
+
+  async function handleDelete(id: string) {
+    const result = await deleteDocument(id);
+
+    if (result.success) {
+      toast({
+        title: 'Success',
+        description: 'Document deleted successfully',
+      });
+      router.refresh();
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete document',
+        variant: 'destructive',
+      });
+    }
+  }
+
   if (!documents?.length) {
     return (
       <div className="text-center text-muted-foreground p-8">
@@ -62,6 +95,7 @@ export function DocumentList({ documents }: { documents: Document[] }) {
             <TableHead>Status</TableHead>
             <TableHead>Size</TableHead>
             <TableHead>Uploaded</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -78,6 +112,16 @@ export function DocumentList({ documents }: { documents: Document[] }) {
               </TableCell>
               <TableCell>
                 {doc.createdAt ? formatDistanceToNow(doc.createdAt, { addSuffix: true }) : 'N/A'}
+              </TableCell>
+              <TableCell className="text-right">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleDelete(doc.id)}
+                  disabled={doc.status === 'processing'}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </TableCell>
             </TableRow>
           ))}

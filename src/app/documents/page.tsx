@@ -1,8 +1,29 @@
 import { DocumentUpload } from '@/components/document-upload';
 import { DocumentList } from '@/components/document-list';
 import { db } from '@/db';
-import { documents } from '@/db/schema';
-import { desc } from 'drizzle-orm';
+import { documents, embeddings } from '@/db/schema';
+import { desc, eq } from 'drizzle-orm';
+
+async function deleteDocument(id: string) {
+  'use server';
+  
+  try {
+    // Delete associated embeddings first (due to foreign key constraint)
+    await db
+      .delete(embeddings)
+      .where(eq(embeddings.documentId, id));
+
+    // Delete the document
+    await db
+      .delete(documents)
+      .where(eq(documents.id, id));
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    return { success: false };
+  }
+}
 
 async function getDocuments() {
   try {
@@ -48,7 +69,10 @@ export default async function DocumentsPage() {
           {/* Document List Section */}
           <div className="rounded-lg border p-4">
             <h2 className="text-lg font-semibold mb-4">Your Documents</h2>
-            <DocumentList documents={docs} />
+            <DocumentList 
+              documents={docs} 
+              deleteDocument={deleteDocument}
+            />
           </div>
         </div>
       </div>
