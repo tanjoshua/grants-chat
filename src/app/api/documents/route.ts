@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
-import { documents } from '@/db/schema';
 import { desc } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    const { db } = await import('@/db');
+    const { documents } = await import('@/db/schema');
+    
     // Get all documents ordered by creation date
     const docs = await db
       .select({
