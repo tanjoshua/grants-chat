@@ -5,13 +5,14 @@ import { EMBEDDING_MODEL } from '@/config/ai';
 import { embedMany } from 'ai';
 import { eq } from 'drizzle-orm';
 
+export const dynamic = 'force-dynamic';
+
 const generateChunks = (input: string): string[] => {
   return input
     .trim()
     .split('.')
     .filter(i => i !== '');
 };
-
 
 export async function POST(request: Request) {
   try {
