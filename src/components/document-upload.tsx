@@ -84,15 +84,6 @@ export function DocumentUpload() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <div className="flex items-center gap-2 text-lg font-semibold">
-          <Upload className="h-5 w-5" />
-          Upload Document
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Upload documents to enhance chat responses with relevant context
-        </p>
-      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField

@@ -50,34 +50,56 @@ async function getDocuments() {
 
 export const dynamic = 'force-dynamic'; // Disable static page generation
 
+async function getSystemMessage() {
+  const { getSystemMessage } = await import('@/app/actions/settings');
+  return getSystemMessage();
+}
+
+import { SystemMessageForm } from '@/components/system-message-form';
+import { updateSystemMessage } from '@/app/actions/settings';
+
 export default async function DocumentsPage() {
   const docs = await getDocuments();
+  const systemMessage = await getSystemMessage();
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex flex-col gap-6">
         <div>
-          <h1 className="text-2xl font-bold">Documents</h1>
+          <h1 className="text-2xl font-bold">Documents & Settings</h1>
           <p className="text-muted-foreground">
-            Upload and manage your documents for RAG-enhanced chat responses.
+            Manage your documents and customize the AI assistant.
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Upload Section */}
           <div className="rounded-lg border p-4">
+            <h2 className="text-lg font-semibold mb-2">Upload Document</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              Add documents to enhance chat responses with relevant information.
+            </p>
             <DocumentUpload />
           </div>
 
           {/* Document List Section */}
           <div className="rounded-lg border p-4">
-            <h2 className="text-lg font-semibold mb-4">Your Documents</h2>
+            <h2 className="text-lg font-semibold mb-2">Your Documents</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              View and manage your uploaded documents.
+            </p>
             <DocumentList 
               documents={docs} 
               deleteDocument={deleteDocument}
             />
           </div>
         </div>
+
+        {/* System Message Form */}
+        <SystemMessageForm 
+          initialMessage={systemMessage}
+          onSave={updateSystemMessage}
+        />
       </div>
     </div>
   );

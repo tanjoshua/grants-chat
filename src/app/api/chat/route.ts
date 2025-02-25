@@ -1,5 +1,6 @@
 import { streamText, tool } from 'ai';
-import { AI_MODEL, GRANTS_SYSTEM_PROMPT } from '@/config/ai';
+import { AI_MODEL } from '@/config/ai';
+import { getSystemMessage } from '@/app/actions/settings';
 import { z } from 'zod';
 import { findRelevantContent } from '@/lib/ai/embedding';
 
@@ -10,10 +11,11 @@ export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
+  const systemMessage = await getSystemMessage();
 
   const result = streamText({
     model: AI_MODEL,
-    system: GRANTS_SYSTEM_PROMPT,
+    system: systemMessage,
     messages,
     tools: {
       getInformation: tool({
