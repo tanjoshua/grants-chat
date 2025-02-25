@@ -101,7 +101,6 @@ export function Chat({ initialQuestions }: ChatProps) {
                     const toolCall = part.toolInvocation;
                     switch (toolCall.toolName) {
                       case 'getInformation': {
-                        console.log(toolCall)
                         const args = toolCall.args as { question: string };
                         return (
                           <div className="flex justify-start" key={index}>

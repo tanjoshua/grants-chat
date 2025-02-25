@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
   let systemMessage = await getSystemMessage();
   // Add tool usage instructions to system message
-  systemMessage = `${systemMessage}\n\nTo provide accurate information about grants, always use the getInformation tool to search the knowledge base before answering questions. This ensures responses are based on the most up-to-date information.`;
+  systemMessage = `${systemMessage}\n\nTo provide accurate information, use the getInformation tool to search the knowledge base before answering questions. This ensures responses are based on the most up-to-date information.`;
 
   const result = streamText({
     model: AI_MODEL,
