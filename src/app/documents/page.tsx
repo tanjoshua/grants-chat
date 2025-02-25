@@ -1,13 +1,14 @@
 import { DocumentUpload } from '@/components/document-upload';
 import { DocumentList } from '@/components/document-list';
-import { db } from '@/db';
-import { documents, embeddings } from '@/db/schema';
 import { desc, eq } from 'drizzle-orm';
 
 async function deleteDocument(id: string) {
   'use server';
   
   try {
+    const { db } = await import('@/db');
+    const { documents, embeddings } = await import('@/db/schema');
+
     // Delete associated embeddings first (due to foreign key constraint)
     await db
       .delete(embeddings)
@@ -27,6 +28,9 @@ async function deleteDocument(id: string) {
 
 async function getDocuments() {
   try {
+    const { db } = await import('@/db');
+    const { documents } = await import('@/db/schema');
+
     return await db
       .select({
         id: documents.id,
