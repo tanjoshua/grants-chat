@@ -1,6 +1,10 @@
 import { DocumentUpload } from '@/components/document-upload';
 import { DocumentList } from '@/components/document-list';
 import { desc, eq } from 'drizzle-orm';
+import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
+import { getSuggestedQuestions, deleteSuggestedQuestion } from '@/app/actions/suggested-questions';
+import { SystemMessageForm } from '@/components/system-message-form';
+import { getSystemMessage, updateSystemMessage } from '@/app/actions/settings';
 
 async function deleteDocument(id: string) {
   'use server';
@@ -50,17 +54,12 @@ async function getDocuments() {
 
 export const dynamic = 'force-dynamic'; // Disable static page generation
 
-async function getSystemMessage() {
-  const { getSystemMessage } = await import('@/app/actions/settings');
-  return getSystemMessage();
-}
-
-import { SystemMessageForm } from '@/components/system-message-form';
-import { updateSystemMessage } from '@/app/actions/settings';
-
-export default async function DocumentsPage() {
-  const docs = await getDocuments();
-  const systemMessage = await getSystemMessage();
+export default async function SettingsPage() {
+  const [docs, systemMessage, questions] = await Promise.all([
+    getDocuments(),
+    getSystemMessage(),
+    getSuggestedQuestions()
+  ]);
 
   return (
     <div className="container mx-auto p-6">
@@ -95,11 +94,17 @@ export default async function DocumentsPage() {
           </div>
         </div>
 
-        {/* System Message Form */}
-        <SystemMessageForm 
-          initialMessage={systemMessage}
-          onSave={updateSystemMessage}
-        />
+        {/* Settings Forms */}
+        <div className="space-y-6">
+          <SystemMessageForm 
+            initialMessage={systemMessage}
+            onSave={updateSystemMessage}
+          />
+          <SuggestedQuestionsForm 
+            questions={questions}
+            onDelete={deleteSuggestedQuestion}
+          />
+        </div>
       </div>
     </div>
   );

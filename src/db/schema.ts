@@ -42,3 +42,13 @@ export const settings = pgTable('settings', {
 
 export type Setting = typeof settings.$inferSelect;
 export type NewSetting = typeof settings.$inferInsert;
+
+export const suggestedQuestions = pgTable('suggested_questions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  question: text('question').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+});
+
+export type SuggestedQuestion = typeof suggestedQuestions.$inferSelect;
+export type NewSuggestedQuestion = typeof suggestedQuestions.$inferInsert;

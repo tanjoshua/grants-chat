@@ -9,8 +9,13 @@ import { Fragment, useEffect, useRef } from 'react';
 import { Loader2 } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { SuggestedQuestions } from '@/components/suggested-questions';
+import type { SuggestedQuestion } from '@/db/schema';
 
-export function Chat() {
+interface ChatProps {
+  initialQuestions: SuggestedQuestion[];
+}
+
+export function Chat({ initialQuestions }: ChatProps) {
   const { messages, input, handleInputChange, handleSubmit, isLoading, append } = useChat({
     api: "/api/chat",
   });
@@ -130,6 +135,7 @@ export function Chat() {
         {messages.length === 0 && (
           <div className="max-w-3xl mx-auto">
             <SuggestedQuestions
+              questions={initialQuestions}
               onSelectQuestion={(question) => {
                 append({
                   role: 'user',

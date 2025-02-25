@@ -1,32 +1,29 @@
-"use client";
+'use client';
 
 import { Button } from "@/components/ui/button";
+import type { SuggestedQuestion } from "@/db/schema";
 
 interface SuggestedQuestionsProps {
+  questions: SuggestedQuestion[];
   onSelectQuestion: (question: string) => void;
 }
 
-const SUGGESTED_QUESTIONS = [
-  "How to apply PSG grant - chosen HRMS vendor?",
-  "PSG grant eligibility & claim steps?",
-  "Recommend grants for my business needs?",
-];
-
 export function SuggestedQuestions({
+  questions,
   onSelectQuestion,
 }: SuggestedQuestionsProps) {
   return (
     <div className="space-y-2">
       <p className="text-sm text-muted-foreground">Try asking:</p>
       <div className="flex flex-wrap gap-2">
-        {SUGGESTED_QUESTIONS.map((question) => (
+        {questions.map((q) => (
           <Button
-            key={question}
+            key={q.id}
             variant="outline"
             className="text-sm"
-            onClick={() => onSelectQuestion(question)}
+            onClick={() => onSelectQuestion(q.question)}
           >
-            {question}
+            {q.question}
           </Button>
         ))}
       </div>

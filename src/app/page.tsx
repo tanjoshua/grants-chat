@@ -1,8 +1,11 @@
 import { Chat } from '@/components/chat';
+import { getSuggestedQuestions } from '@/app/actions/suggested-questions';
 
 export const dynamic = 'force-dynamic';
 
-export default function Page() {
+export default async function Page() {
+  const questions = await getSuggestedQuestions();
+
   return (
     <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
       {/* Header */}
@@ -12,7 +15,7 @@ export default function Page() {
         </div>
       </header>
 
-      <Chat />
+      <Chat initialQuestions={questions} />
     </div>
   );
 }

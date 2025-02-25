@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { EMBEDDING_MODEL } from '@/config/ai';
 import { embedMany } from 'ai';
 import { eq } from 'drizzle-orm';
+import { EMBEDDING_MODEL } from '@/config/ai';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,8 +14,10 @@ const generateChunks = (input: string): string[] => {
 
 export async function POST(request: Request) {
   try {
-    const { db } = await import('@/db');
-    const { documents, embeddings } = await import('@/db/schema');
+    const [{ db }, { documents, embeddings }] = await Promise.all([
+      import('@/db'),
+      import('@/db/schema')
+    ]);
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
