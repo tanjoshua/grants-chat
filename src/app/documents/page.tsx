@@ -66,7 +66,6 @@ export default async function DocumentsPage() {
         <div className="grid gap-6 md:grid-cols-2">
           {/* Upload Section */}
           <div className="rounded-lg border p-4">
-            <h2 className="text-lg font-semibold mb-4">Upload Document</h2>
             <DocumentUpload />
           </div>
 
