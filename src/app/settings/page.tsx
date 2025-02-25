@@ -1,14 +1,15 @@
 import { DocumentUpload } from '@/components/document-upload';
 import { DocumentList } from '@/components/document-list';
 import { desc, eq } from 'drizzle-orm';
+import { db } from '@/db';
+import { documents, embeddings } from '@/db/schema';
 import { SystemMessageForm } from '@/components/system-message-form';
 import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
+import { getSystemMessage, updateSystemMessage } from '@/app/actions/settings';
+import { getSuggestedQuestions, deleteSuggestedQuestion } from '@/app/actions/suggested-questions';
 
 async function getDocuments() {
   try {
-    const { db } = await import('@/db');
-    const { documents } = await import('@/db/schema');
-
     return await db
       .select({
         id: documents.id,
@@ -29,9 +30,6 @@ async function getDocuments() {
 async function deleteDocument(id: string) {
   'use server';
   
-  const { db } = await import('@/db');
-  const { documents, embeddings } = await import('@/db/schema');
-
   // Delete associated embeddings first (due to foreign key constraint)
   await db
     .delete(embeddings)
@@ -45,17 +43,9 @@ async function deleteDocument(id: string) {
   return { success: true };
 }
 
-export const dynamic = 'force-dynamic'; // Disable static page generation
+
 
 export default async function SettingsPage() {
-  const [
-    { getSystemMessage, updateSystemMessage },
-    { getSuggestedQuestions, deleteSuggestedQuestion }
-  ] = await Promise.all([
-    import('@/app/actions/settings'),
-    import('@/app/actions/suggested-questions')
-  ]);
-
   const [docs, systemMessage, questions] = await Promise.all([
     getDocuments(),
     getSystemMessage(),

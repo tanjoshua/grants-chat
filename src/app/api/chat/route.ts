@@ -1,20 +1,14 @@
 import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { AI_MODEL } from '@/config/ai';
-
-export const dynamic = 'force-dynamic';
+import { getSystemMessage } from '@/app/actions/settings';
+import { findRelevantContent } from '@/lib/ai/embedding';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
-  
-  const [{ getSystemMessage }, { findRelevantContent }] = await Promise.all([
-    import('@/app/actions/settings'),
-    import('@/lib/ai/embedding')
-  ]);
-
   let systemMessage = await getSystemMessage();
   // Add tool usage instructions to system message
   systemMessage = `${systemMessage}\n\nTo provide accurate information, use the getInformation tool to search the knowledge base before answering questions. This ensures responses are based on the most up-to-date information.`;

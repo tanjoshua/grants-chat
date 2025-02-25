@@ -1,9 +1,7 @@
 import { Chat } from '@/components/chat';
-
-export const dynamic = 'force-dynamic';
+import { getSuggestedQuestions } from '@/app/actions/suggested-questions';
 
 export default async function Page() {
-  const { getSuggestedQuestions } = await import('@/app/actions/suggested-questions');
   const questions = await getSuggestedQuestions();
 
   return (

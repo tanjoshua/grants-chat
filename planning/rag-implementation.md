@@ -8,24 +8,6 @@ Implement Retrieval Augmented Generation to enhance chat responses with relevant
 - Neon PostgreSQL with pgvector for vector storage
 - Local development setup with Docker for database
 
-## Current Limitations and Future Improvements
-
-### Build-time Database Connections
-Currently using a temporary solution to handle database connections during build time:
-1. Using `export const dynamic = 'force-dynamic'` on API routes and pages that access the database
-2. Using dynamic imports for database-related modules
-
-This approach has some drawbacks:
-- Disables Next.js static optimization features
-- Makes the codebase less clean with dynamic imports
-
-### Planned Improvements
-
-1. Build-time Database Handling
-   - Implement a way to skip database connections during build time
-   - Remove dynamic imports and force-dynamic flags
-   - Keep using @neondatabase/serverless for optimal serverless performance
-
 ## Implementation Steps
 
 1. Local Development Setup [COMPLETED]
