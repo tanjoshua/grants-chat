@@ -103,7 +103,12 @@ export default function Page() {
 
         {/* Input Form */}
         <div className="px-4 py-4">
-          <form onSubmit={handleSubmit} className="flex gap-2 max-w-3xl mx-auto">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(e);
+            }} 
+            className="flex gap-2 max-w-3xl mx-auto">
             <Input
               name="prompt"
               value={input}
