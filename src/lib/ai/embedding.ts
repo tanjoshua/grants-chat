@@ -1,7 +1,5 @@
 import { EMBEDDING_MODEL } from '@/config/ai';
-import { db } from '@/db';
-import { embeddings } from '@/db/schema';
-import { embed} from 'ai';
+import { embed } from 'ai';
 import { cosineDistance, sql, gt, desc } from 'drizzle-orm';
 
 
@@ -16,6 +14,8 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   
   
   export const findRelevantContent = async (userQuery: string) => {
+    const { db } = await import('@/db');
+    const { embeddings } = await import('@/db/schema');
     const userQueryEmbedded = await generateEmbedding(userQuery);
     const similarity = sql<number>`1 - (${cosineDistance(
       embeddings.embedding,

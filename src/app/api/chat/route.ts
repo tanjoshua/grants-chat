@@ -1,9 +1,9 @@
 import { streamText, tool } from 'ai';
-
-export const dynamic = 'force-dynamic';
 import { AI_MODEL, GRANTS_SYSTEM_PROMPT } from '@/config/ai';
 import { z } from 'zod';
 import { findRelevantContent } from '@/lib/ai/embedding';
+
+export const dynamic = 'force-dynamic';
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
