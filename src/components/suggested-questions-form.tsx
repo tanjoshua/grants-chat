@@ -34,7 +34,7 @@ export function SuggestedQuestionsForm({ questions, onDelete }: SuggestedQuestio
     } catch (error) {
       toast({
         title: 'Failed to add question',
-        description: 'Please try again.',
+        description: error instanceof Error ? error.message : 'Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -53,7 +53,7 @@ export function SuggestedQuestionsForm({ questions, onDelete }: SuggestedQuestio
     } catch (error) {
       toast({
         title: 'Failed to delete question',
-        description: 'Please try again.',
+        description: error instanceof Error ? error.message : 'Please try again.',
         variant: 'destructive',
       });
     } finally {
