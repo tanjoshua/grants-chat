@@ -5,11 +5,13 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { Loader2 } from "lucide-react";
+import ReactMarkdown from 'react-markdown';
+import { SuggestedQuestions } from '@/components/suggested-questions';
 
 export function Chat() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading} = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, append } = useChat({
     api: "/api/chat",
   });
 
@@ -51,13 +53,42 @@ export function Chat() {
                   )}
                 >
                   <div className="text-sm">
-                    {message.content}
+                    {message.role === 'user' ? (
+                    message.content
+                  ) : (
+                    <ReactMarkdown
+                      components={{
+                        h1: ({children}) => <h1 className="text-2xl font-bold mb-4">{children}</h1>,
+                        h2: ({children}) => <h2 className="text-xl font-bold mb-3">{children}</h2>,
+                        h3: ({children}) => <h3 className="text-lg font-bold mb-2">{children}</h3>,
+                        h4: ({children}) => <h4 className="text-base font-bold mb-2">{children}</h4>,
+                        h5: ({children}) => <h5 className="text-sm font-bold mb-1">{children}</h5>,
+                        h6: ({children}) => <h6 className="text-sm font-bold mb-1">{children}</h6>,
+                        p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
+                        ul: ({children}) => <ul className="list-disc pl-4 mb-2 last:mb-0">{children}</ul>,
+                        ol: ({children}) => <ol className="list-decimal pl-4 mb-2 last:mb-0">{children}</ol>,
+                        li: ({children}) => <li className="mb-1 last:mb-0">{children}</li>,
+                        a: ({href, children}) => (
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary underline hover:text-primary/80"
+                          >
+                            {children}
+                          </a>
+                        )
+                      }}
+                    >
+                      {message.content}
+                    </ReactMarkdown>
+                  )}
                   </div>
                 </div>
               </div>
               }
 
-              return <div key={message.id}>
+              return <Fragment key={message.id}>
                 {message.parts?.map((part, index) => {
                   switch (part.type) {
                     case 'text': 
@@ -79,7 +110,7 @@ export function Chat() {
                     }
                   }
                 })}
-              </div>
+              </Fragment>
             }
             )}
             {isThinking && (
@@ -94,8 +125,20 @@ export function Chat() {
         </ScrollArea>
 
 
-      {/* Input Form */}
-      <div className="px-4 py-4">
+      {/* Suggestions and Input Form */}
+      <div className="px-4 py-4 space-y-4">
+        {messages.length === 0 && (
+          <div className="max-w-3xl mx-auto">
+            <SuggestedQuestions
+              onSelectQuestion={(question) => {
+                append({
+                  role: 'user',
+                  content: question,
+                });
+              }}
+            />
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="flex gap-2 max-w-3xl mx-auto">
           <Input
             name="prompt"

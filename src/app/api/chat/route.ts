@@ -27,7 +27,7 @@ export async function POST(req: Request) {
       }),
     },
     toolCallStreaming: true,
-    maxSteps: 3,
+    maxSteps: 5,
   });
 
   return result.toDataStreamResponse();
