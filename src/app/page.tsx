@@ -1,5 +1,7 @@
 import { Chat } from '@/components/chat';
 
+export const dynamic = 'force-dynamic';
+
 export default function Page() {
   return (
     <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full">
