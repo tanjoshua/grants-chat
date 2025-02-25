@@ -1,34 +1,8 @@
 import { DocumentUpload } from '@/components/document-upload';
 import { DocumentList } from '@/components/document-list';
 import { desc, eq } from 'drizzle-orm';
-import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
-import { getSuggestedQuestions, deleteSuggestedQuestion } from '@/app/actions/suggested-questions';
 import { SystemMessageForm } from '@/components/system-message-form';
-import { getSystemMessage, updateSystemMessage } from '@/app/actions/settings';
-
-async function deleteDocument(id: string) {
-  'use server';
-  
-  try {
-    const { db } = await import('@/db');
-    const { documents, embeddings } = await import('@/db/schema');
-
-    // Delete associated embeddings first (due to foreign key constraint)
-    await db
-      .delete(embeddings)
-      .where(eq(embeddings.documentId, id));
-
-    // Delete the document
-    await db
-      .delete(documents)
-      .where(eq(documents.id, id));
-
-    return { success: true };
-  } catch (error) {
-    console.error('Error deleting document:', error);
-    return { success: false };
-  }
-}
+import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
 
 async function getDocuments() {
   try {
@@ -52,9 +26,36 @@ async function getDocuments() {
   }
 }
 
+async function deleteDocument(id: string) {
+  'use server';
+  
+  const { db } = await import('@/db');
+  const { documents, embeddings } = await import('@/db/schema');
+
+  // Delete associated embeddings first (due to foreign key constraint)
+  await db
+    .delete(embeddings)
+    .where(eq(embeddings.documentId, id));
+
+  // Delete the document
+  await db
+    .delete(documents)
+    .where(eq(documents.id, id));
+
+  return { success: true };
+}
+
 export const dynamic = 'force-dynamic'; // Disable static page generation
 
 export default async function SettingsPage() {
+  const [
+    { getSystemMessage, updateSystemMessage },
+    { getSuggestedQuestions, deleteSuggestedQuestion }
+  ] = await Promise.all([
+    import('@/app/actions/settings'),
+    import('@/app/actions/suggested-questions')
+  ]);
+
   const [docs, systemMessage, questions] = await Promise.all([
     getDocuments(),
     getSystemMessage(),
@@ -102,9 +103,7 @@ export default async function SettingsPage() {
           />
           <SuggestedQuestionsForm 
             questions={questions}
-            onDelete={async (id: string) => {
-              await deleteSuggestedQuestion(id);
-            }}
+            onDelete={deleteSuggestedQuestion}
           />
         </div>
       </div>

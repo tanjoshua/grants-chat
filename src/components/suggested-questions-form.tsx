@@ -10,7 +10,7 @@ import { addSuggestedQuestion } from '@/app/actions/suggested-questions';
 
 interface SuggestedQuestionsFormProps {
   questions: SuggestedQuestion[];
-  onDelete: (id: string) => Promise<void>;
+  onDelete: (id: string) => Promise<{ success: boolean }>;
 }
 
 export function SuggestedQuestionsForm({ questions, onDelete }: SuggestedQuestionsFormProps) {
