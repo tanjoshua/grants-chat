@@ -105,7 +105,6 @@ export default function Page() {
         <div className="px-4 py-4">
           <form 
             onSubmit={handleSubmit} 
-            method="post"
             className="flex gap-2 max-w-3xl mx-auto">
             <Input
               name="prompt"

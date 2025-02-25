@@ -15,6 +15,7 @@ export function middleware(request: NextRequest) {
     object-src 'none';
     base-uri 'self';
     form-action 'self';
+    connect-src 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
 `;
