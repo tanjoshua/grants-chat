@@ -15,7 +15,9 @@ export async function POST(req: Request) {
     import('@/lib/ai/embedding')
   ]);
 
-  const systemMessage = await getSystemMessage();
+  let systemMessage = await getSystemMessage();
+  // Add tool usage instructions to system message
+  systemMessage = `${systemMessage}\n\nTo provide accurate information about grants, always use the getInformation tool to search the knowledge base before answering questions. This ensures responses are based on the most up-to-date information.`;
 
   const result = streamText({
     model: AI_MODEL,
@@ -23,7 +25,7 @@ export async function POST(req: Request) {
     messages,
     tools: {
       getInformation: tool({
-        description: `get information from your knowledge base to answer questions.`,
+        description: `Search the knowledge base for information about Singapore government grants, eligibility criteria, application processes, and requirements. Use this tool to ensure accurate and up-to-date information.`,
         parameters: z.object({
           question: z.string().describe('the users question'),
         }),

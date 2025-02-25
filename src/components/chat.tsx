@@ -39,7 +39,6 @@ export function Chat({ initialQuestions }: ChatProps) {
           <div className="space-y-6 max-w-3xl mx-auto p-4">
             {messages.map((message, index) => {
               if (message.content) {
-                console.log('returning message content', message.content)
 
               return <div
                 key={message.id}
@@ -102,11 +101,18 @@ export function Chat({ initialQuestions }: ChatProps) {
                     const toolCall = part.toolInvocation;
                     switch (toolCall.toolName) {
                       case 'getInformation': {
+                        console.log(toolCall)
+                        const args = toolCall.args as { question: string };
                         return (
                           <div className="flex justify-start" key={index}>
-                            <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12 flex items-center gap-2">
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              <span className="text-sm">Searching documents...</span>
+                            <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12">
+                              <div className="flex items-center gap-2 mb-1">
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span className="text-sm font-medium">Searching knowledge base</span>
+                              </div>
+                              <p className="text-sm text-muted-foreground pl-6">
+                                Looking for information about: {args?.question}
+                              </p>
                             </div>
                           </div>
                         );

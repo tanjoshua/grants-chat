@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RAG Chat App",
-  description: "Chat with your documents using RAG",
+  title: "Grants Chat",
+  description: "Chat about Singapore government grants",
 };
 
 export default function RootLayout({
