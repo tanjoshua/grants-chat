@@ -67,7 +67,7 @@ export default async function SettingsPage() {
         <div>
           <h1 className="text-2xl font-bold">Settings</h1>
           <p className="text-muted-foreground">
-            Manage your documents and customize your AI assistant.
+            Manage your documents and customize the knowledge base of the bot.
           </p>
         </div>
 
@@ -102,7 +102,9 @@ export default async function SettingsPage() {
           />
           <SuggestedQuestionsForm 
             questions={questions}
-            onDelete={deleteSuggestedQuestion}
+            onDelete={async (id: string) => {
+              await deleteSuggestedQuestion(id);
+            }}
           />
         </div>
       </div>
