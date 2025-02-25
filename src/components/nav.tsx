@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 const navigation = [
   { name: 'Chat', href: '/' },
-  { name: 'Documents', href: '/documents' },
+  { name: 'Settings', href: '/settings' },
 ];
 
 export function Nav() {
