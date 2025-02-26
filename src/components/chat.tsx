@@ -77,7 +77,7 @@ export function Chat({ initialQuestions }: ChatProps) {
                             href={href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-primary underline hover:text-primary/80"
+                            className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                           >
                             {children}
                           </a>
