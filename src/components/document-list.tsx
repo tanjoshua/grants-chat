@@ -118,7 +118,6 @@ export function DocumentList({
                   variant="ghost"
                   size="icon"
                   onClick={() => handleDelete(doc.id)}
-                  disabled={doc.status === 'processing'}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
