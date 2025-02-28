@@ -4,14 +4,18 @@ import { AI_MODEL } from '@/config/ai';
 import { getSystemMessage } from '@/app/actions/settings';
 import { findRelevantContent } from '@/lib/ai/embedding';
 
-// Allow streaming responses up to 30 seconds
-export const maxDuration = 30;
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
   let systemMessage = await getSystemMessage();
   // Add tool usage instructions to system message
-  systemMessage = `${systemMessage}\n\nTo provide accurate information, use the getInformation tool to search the knowledge base before answering questions. This ensures responses are based on the most up-to-date information.`;
+  systemMessage = `${systemMessage}\n\nTo provide accurate information, follow these guidelines:
+  
+1. For new questions, use the getInformation tool to search the knowledge base.
+2. For follow-up questions, prioritize information already retrieved in previous responses before making new searches.
+3. Be precise with your search queries to get the most relevant information.
+4. When information is not available in the knowledge base, clearly state this limitation.`;
 
   const result = streamText({
     model: AI_MODEL,

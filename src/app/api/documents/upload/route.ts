@@ -5,7 +5,7 @@ import { EMBEDDING_MODEL } from '@/config/ai';
 import { db } from '@/db';
 import { documents, embeddings } from '@/db/schema';
 
-const generateChunks = (input: string, chunkSize: number = 12000, overlap: number = 1500): string[] => {
+const generateChunks = (input: string, chunkSize: number = 1500, overlap: number = 250): string[] => {
   try {
     // Safety check for input
     if (!input || typeof input !== 'string') {
@@ -88,7 +88,7 @@ const generateChunks = (input: string, chunkSize: number = 12000, overlap: numbe
           consecutiveZeroAdvancements++;
           if (consecutiveZeroAdvancements >= 3) {
             console.warn(`Detected ${consecutiveZeroAdvancements} consecutive zero advancements. Forcing progress...`);
-            startIndex = Math.min(text.length, previousStartIndex + Math.max(1000, chunkSize / 4));
+            startIndex = Math.min(text.length, previousStartIndex + Math.max(300, chunkSize / 4));
             consecutiveZeroAdvancements = 0;
           }
         } else {
@@ -103,7 +103,7 @@ const generateChunks = (input: string, chunkSize: number = 12000, overlap: numbe
         }
         
         // Debug logging if we're advancing very little
-        if (advancement < 1000 && iterationCount % 100 === 0) {
+        if (advancement < 300 && iterationCount % 100 === 0) {
           console.log(`Slow advancement detected: only advanced ${advancement} chars in this iteration`);
         }
       } else {
@@ -120,12 +120,12 @@ const generateChunks = (input: string, chunkSize: number = 12000, overlap: numbe
         
         // If we're still not advancing, move forward by a fixed amount
         if (startIndex <= endIndex) {
-          startIndex = Math.min(text.length, startIndex + 1000);
+          startIndex = Math.min(text.length, startIndex + 300);
         }
       }
       
       // Ensure we advance at least some minimum amount
-      if (iterationCount > 1 && totalAdvancement < iterationCount * 100) {
+      if (iterationCount > 1 && totalAdvancement < iterationCount * 30) {
         console.warn(`Forcing advancement to avoid stalling. Current startIndex: ${startIndex}`);
         startIndex = Math.min(text.length, startIndex + chunkSize / 2);
       }
