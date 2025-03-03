@@ -1,4 +1,5 @@
 import { DocumentUpload } from '@/components/document-upload';
+import { revalidatePath } from 'next/cache';
 import { DocumentList } from '@/components/document-list';
 import { desc, eq } from 'drizzle-orm';
 import { db } from '@/db';
@@ -45,6 +46,13 @@ async function deleteDocument(id: string) {
 
 
 
+// Function to revalidate data and refetch documents
+async function refetchDocuments() {
+  'use server';
+  // Force a full revalidation of the settings page
+  revalidatePath('/settings', 'page');
+}
+
 export default async function SettingsPage() {
   const [docs, systemMessage, questions] = await Promise.all([
     getDocuments(),
@@ -69,7 +77,7 @@ export default async function SettingsPage() {
             <p className="text-sm text-muted-foreground mb-4">
               Add documents to enhance chat responses with relevant information.
             </p>
-            <DocumentUpload />
+            <DocumentUpload onUploadComplete={refetchDocuments} />
           </div>
 
           {/* Document List Section */}

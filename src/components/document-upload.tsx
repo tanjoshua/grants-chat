@@ -7,7 +7,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
 import { Loader2, Upload } from 'lucide-react';
 import * as z from 'zod';
 
@@ -24,10 +23,9 @@ const ACCEPTED_FILE_TYPES = [
   { ext: '.doc,.docx', type: 'application/msword', name: 'Word' },
 ];
 
-export function DocumentUpload() {
+export function DocumentUpload({ onUploadComplete }: { onUploadComplete?: () => Promise<void> }) {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema)
@@ -62,8 +60,10 @@ export function DocumentUpload() {
         description: `${data.file.name} uploaded successfully`,
       });
       
-      // Refresh the page to update the document list
-      router.refresh();
+      // Call onUploadComplete to refetch documents
+      if (onUploadComplete) {
+        await onUploadComplete();
+      }
     } catch (error) {
       console.error('Error uploading document:', error);
       form.setError('file', { 
@@ -75,6 +75,11 @@ export function DocumentUpload() {
         title: 'Error',
         description: error instanceof Error ? error.message : 'Failed to upload document',
       });
+      
+      // Call onUploadComplete to refetch documents even when upload fails
+      if (onUploadComplete) {
+        await onUploadComplete();
+      }
     } finally {
       setIsUploading(false);
     }
