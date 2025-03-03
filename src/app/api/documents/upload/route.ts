@@ -5,6 +5,8 @@ import { EMBEDDING_MODEL } from '@/config/ai';
 import { db } from '@/db';
 import { documents, embeddings } from '@/db/schema';
 
+export const maxDuration = 60;
+
 const generateChunks = (input: string, chunkSize: number = 1500, overlap: number = 250): string[] => {
   try {
     // Safety check for input
