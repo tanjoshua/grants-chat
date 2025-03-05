@@ -20,7 +20,8 @@ const ACCEPTED_FILE_TYPES = [
   { ext: '.txt', type: 'text/plain', name: 'Text' },
   { ext: '.csv', type: 'text/csv', name: 'CSV' },
   { ext: '.pdf', type: 'application/pdf', name: 'PDF' },
-  { ext: '.doc,.docx', type: 'application/msword', name: 'Word' },
+  { ext: '.doc', type: 'application/msword', name: 'Word Doc' },
+  { ext: '.docx', type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', name: 'Word Docx' },
 ];
 
 export function DocumentUpload({ onUploadComplete }: { onUploadComplete?: () => Promise<void> }) {

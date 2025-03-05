@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { EMBEDDING_MODEL } from '@/config/ai';
 import { db } from '@/db';
 import { documents, embeddings } from '@/db/schema';
+import mammoth from 'mammoth';
 
 export const maxDuration = 60;
 
@@ -201,14 +202,45 @@ export async function POST(request: Request) {
       );
     }
 
-    // Read file content
-    // Read and clean file content
-    let content = await file.text();
+    // Read file content based on file type
+    let content = '';
     
-    // Remove null bytes and invalid UTF-8 characters
+    // Get file extension from filename
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    
+    if (fileExtension === 'docx' || fileExtension === 'doc') {
+      // Handle Word documents using mammoth
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        // Fix: use the correct API format for mammoth
+        const result = await mammoth.extractRawText({
+          buffer: Buffer.from(arrayBuffer)
+        });
+        content = result.value;
+        
+        // Log a sample of the extracted text for debugging/verification
+        console.log('===== DOCX CONTENT PREVIEW =====');
+        console.log(content.substring(0, 500) + (content.length > 500 ? '...' : ''));
+        console.log(`Total extracted text length: ${content.length} characters`);
+        console.log('================================');
+        
+        // Log any warnings
+        if (result.messages.length > 0) {
+          console.log('Mammoth warnings:', result.messages);
+        }
+      } catch (error) {
+        console.error('Error parsing Word document:', error);
+        throw new Error('Failed to extract text from Word document');
+      }
+    } else {
+      // Handle other file types as text
+      content = await file.text();
+    }
+    
+    // Clean the text content
     content = content
       .replace(/\u0000/g, '') // Remove null bytes
-      .replace(/[^\x20-\x7E\x0A\x0D]/g, ' '); // Keep only printable ASCII, newlines and carriage returns
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ''); // Remove control characters but keep newlines (\x0A) and carriage returns (\x0D)
 
     // Create document record
     const [document] = await db.insert(documents).values({
