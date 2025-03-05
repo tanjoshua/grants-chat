@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Grants Chat",
+  title: "askHugh.ai",
   description: "Chat about Singapore government grants",
 };
 

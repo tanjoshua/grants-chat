@@ -9,7 +9,7 @@ export default async function Page() {
       {/* Header */}
       <header>
         <div className="px-6 py-4">
-          <h1 className="text-xl font-semibold">Grants Chat</h1>
+          <h1 className="text-xl font-semibold">askHugh.ai</h1>
         </div>
       </header>
 

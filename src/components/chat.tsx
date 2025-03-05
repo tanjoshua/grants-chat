@@ -2,10 +2,10 @@
 
 import { useChat } from '@ai-sdk/react';
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef, } from 'react';
 import { Loader2 } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { SuggestedQuestions } from '@/components/suggested-questions';
@@ -21,6 +21,7 @@ export function Chat({ initialQuestions }: ChatProps) {
   });
 
   const lastMessageRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Scroll to bottom when new messages are added or updated
   useEffect(() => {
@@ -28,6 +29,15 @@ export function Chat({ initialQuestions }: ChatProps) {
       lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  // Auto-resize textarea when input changes
+  useEffect(() => {
+    if (textareaRef.current) {
+      // Reset height to auto first to get accurate scrollHeight measurement
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
+    }
+  }, [input]);
 
   // Check if AI is currently responding (has a message but it's empty)
   const isThinking = isLoading && (!messages.length || messages[messages.length - 1].role === 'user');
@@ -127,7 +137,7 @@ export function Chat({ initialQuestions }: ChatProps) {
               <div className="flex justify-start">
                 <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12 flex items-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">AI is thinking...</span>
+                  <span className="text-sm">Compiling suitable grants for you…</span>
                 </div>
               </div>
             )}
@@ -138,7 +148,18 @@ export function Chat({ initialQuestions }: ChatProps) {
       {/* Suggestions and Input Form */}
       <div className="px-4 py-4 space-y-4">
         {messages.length === 0 && (
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <div className="bg-muted rounded-lg p-4 text-sm">
+              <h3 className="font-medium mb-2">Welcome to askHugh.ai</h3>
+              <p className="mb-2">This bot provides information on Singapore government grants like PSG, MRA, and Startup Founder grants etc. It can help you determine:</p>
+              <ul className="list-disc pl-5 space-y-1 mb-2">
+                <li>Eligibility requirements</li>
+                <li>Grant amounts and funding details</li>
+                <li>Application processes and deadlines</li>
+                <li>Suitable grants for your specific business needs</li>
+              </ul>
+              <p>Ask a question to get started!</p>
+            </div>
             <SuggestedQuestions
               questions={initialQuestions}
               onSelectQuestion={(question) => {
@@ -151,13 +172,27 @@ export function Chat({ initialQuestions }: ChatProps) {
           </div>
         )}
         <form onSubmit={handleSubmit} className="flex gap-2 max-w-3xl mx-auto">
-          <Input
+          <Textarea
+            ref={textareaRef}
             name="prompt"
             value={input}
-            onChange={handleInputChange}
-            placeholder="Type your message..."
-            className="flex-1"
+            onChange={(e) => {
+              handleInputChange(e);
+              // Auto-resize already handled by useEffect
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!isLoading && input.trim()) {
+                  handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
+                }
+              }
+            }}
+            placeholder="Tell me your business type and grant needs, e.g., I'm a startup seeking grants for HRMS equipment."
+            className="flex-1 min-h-[40px] max-h-[150px] resize-none py-2"
             disabled={isLoading}
+            autoComplete="off"
+            rows={1}
           />
           <Button type="submit" disabled={isLoading}>
             {isLoading ? (
@@ -167,6 +202,9 @@ export function Chat({ initialQuestions }: ChatProps) {
             )}
           </Button>
         </form>
+        <div className="text-xs text-muted-foreground text-center mt-2 max-w-3xl mx-auto">
+          Disclaimer: AI-generated results may contain inaccuracies. Please review and use at your discretion. Last Updated 5 Mar 2025.
+        </div>
       </div>
     </div>
   );
