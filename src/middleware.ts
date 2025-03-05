@@ -1,47 +1,57 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Hard-coded credentials for testing
 const USERNAME = '71';
 const PASSWORD = 'ilove71';
 
-// This function runs for all requests matching the matcher pattern
 export function middleware(request: NextRequest) {
-  console.log('Middleware running for:', request.nextUrl.pathname);
-
-  // Get the Authorization header
-  const authHeader = request.headers.get('authorization');
+  // Safety check - double verify we're only on the settings page
+  const pathname = request.nextUrl.pathname;
   
-  if (authHeader) {
-    // The Authorization header is in the format "Basic base64(username:password)"
-    const auth = authHeader.split(' ')[1];
-    const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':');
-    
-    // Check credentials
-    if (user === USERNAME && pwd === PASSWORD) {
-      console.log('Auth successful for', request.nextUrl.pathname);
-      return NextResponse.next();
-    }
-    console.log('Invalid credentials for', request.nextUrl.pathname);
-  } else {
-    console.log('No auth header for', request.nextUrl.pathname);
+  // This should be redundant with the matcher, but just to be safe
+  if (pathname !== '/settings') {
+    // If we somehow got here on a different path, just continue without auth
+    return NextResponse.next();
   }
   
-  // If no auth header or invalid credentials, request authentication
-  return new NextResponse('Authentication required', {
+  // Extra safety for Vercel - Check if this is an API route or asset
+  // This ensures we're only intercepting the actual settings page
+  if (pathname.includes('/api/') || pathname.includes('/_next/')) {
+    return NextResponse.next();
+  }
+  
+  // Check for auth header only on the settings page
+  const authHeader = request.headers.get('authorization');
+
+  // If we have valid credentials, allow access
+  if (authHeader) {
+    try {
+      const encoded = authHeader.split(' ')[1];
+      const decoded = Buffer.from(encoded, 'base64').toString();
+      const [user, pwd] = decoded.split(':');
+      
+      if (user === USERNAME && pwd === PASSWORD) {
+        return NextResponse.next();
+      }
+    } catch (error) {
+      console.error('Error parsing auth header:', error);
+    }
+  }
+  
+  // Only return the auth challenge for the settings page
+  return new NextResponse('Authentication Required', {
     status: 401,
     headers: {
-      'WWW-Authenticate': 'Basic realm="Settings Access"',
+      // Only prompt for auth on the settings page
+      'WWW-Authenticate': 'Basic realm="Settings Page Access"',
     },
   });
 }
 
-// Configure middleware to only run on specific paths
+// Extremely strict matcher configuration - only intercept the exact settings path
 export const config = {
-  // This is the important part - it tells Next.js to ONLY run this middleware
-  // on requests that match these patterns
   matcher: [
-    // Only protect the settings page and its subpaths
+    // ONLY match the exact '/settings' path and nothing else
     '/settings',
   ],
 };

@@ -108,3 +108,6 @@ export default async function SettingsPage() {
     </div>
   );
 }
+
+// Ensure this page is always server-rendered and not cached
+export const dynamic = 'force-dynamic';
