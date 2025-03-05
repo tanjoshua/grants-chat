@@ -13,12 +13,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
   let systemMessage = await getSystemMessage();
   // Add tool usage instructions to system message
-  systemMessage = `${systemMessage}\n\nTo provide accurate information, follow these guidelines:
-  
-1. For new questions, use the getInformation tool to search the knowledge base.
-2. For follow-up questions, prioritize information already retrieved in previous responses before making new searches.
-3. Be precise with your search queries to get the most relevant information.
-4. When information is not available in the knowledge base, clearly state this limitation.`;
+  systemMessage = `${systemMessage}\n\nTo provide accurate information, use the getInformation tool to search the knowledge base.`;
 
   const result = streamText({
     model: AI_MODEL,
