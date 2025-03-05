@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -14,7 +15,18 @@ export function Nav() {
 
   return (
     <nav className="border-b">
-      <div className="container mx-auto flex h-14 items-center">
+      <div className="container mx-auto flex h-14 items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center">
+            <Image 
+              src="https://www.gobusiness.gov.sg/images/Gobiz_logo_SG.svg" 
+              alt="GoBusiness Logo" 
+              width={160} 
+              height={55} 
+              priority
+            />
+          </Link>
+        </div>
         <div className="flex gap-6 font-medium">
           {navigation.map((item) => (
             <Link
