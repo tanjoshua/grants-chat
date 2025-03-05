@@ -1,44 +1,47 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// For testing, use the credentials from the environment variables or hardcoded values
-// Since we're hardcoding these, make sure they match your .env.local values
-const USERNAME = '71';  
-const PASSWORD = 'ilove71'; 
+// Hard-coded credentials for testing
+const USERNAME = '71';
+const PASSWORD = 'ilove71';
 
+// This function runs for all requests matching the matcher pattern
 export function middleware(request: NextRequest) {
-  // Only apply to /settings routes
-  if (request.nextUrl.pathname.startsWith('/settings')) {
-    // Get the Authorization header
-    const authHeader = request.headers.get('authorization');
+  console.log('Middleware running for:', request.nextUrl.pathname);
+
+  // Get the Authorization header
+  const authHeader = request.headers.get('authorization');
+  
+  if (authHeader) {
+    // The Authorization header is in the format "Basic base64(username:password)"
+    const auth = authHeader.split(' ')[1];
+    const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':');
     
-    if (authHeader) {
-      // The Authorization header is in the format "Basic base64(username:password)"
-      const auth = authHeader.split(' ')[1];
-      const [user, pwd] = Buffer.from(auth, 'base64').toString().split(':');
-      
-      // Check credentials
-      if (user === USERNAME && pwd === PASSWORD) {
-        return NextResponse.next();
-      }
+    // Check credentials
+    if (user === USERNAME && pwd === PASSWORD) {
+      console.log('Auth successful for', request.nextUrl.pathname);
+      return NextResponse.next();
     }
-    
-    // If no auth header or invalid credentials, request authentication
-    const response = new NextResponse('Authentication required', {
-      status: 401,
-      headers: {
-        'WWW-Authenticate': 'Basic realm="Settings Access"',
-      },
-    });
-    
-    return response;
+    console.log('Invalid credentials for', request.nextUrl.pathname);
+  } else {
+    console.log('No auth header for', request.nextUrl.pathname);
   }
   
-  // For other routes, continue as normal
-  return NextResponse.next();
+  // If no auth header or invalid credentials, request authentication
+  return new NextResponse('Authentication required', {
+    status: 401,
+    headers: {
+      'WWW-Authenticate': 'Basic realm="Settings Access"',
+    },
+  });
 }
 
-// Only run middleware on routes that start with /settings
+// Configure middleware to only run on specific paths
 export const config = {
-  matcher: '/settings/:path*',
+  // This is the important part - it tells Next.js to ONLY run this middleware
+  // on requests that match these patterns
+  matcher: [
+    // Only protect the settings page and its subpaths
+    '/settings',
+  ],
 };
