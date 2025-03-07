@@ -2,7 +2,6 @@ This is a LLM chat application built with Next.js.
 
 ## Directories
 - `src/`: source code
-- `planning/`: files to plan features and tasks, as well as track progress
 
 ### Using shadcn for creating ui components
 For all UI development:
@@ -10,7 +9,6 @@ For all UI development:
 - Use shadcn/ui as the primary component library
 - Follow shadcn/ui's design patterns and theming system
 - Leverage shadcn's pre-built components before creating custom ones
-- If the component has not been imported into the project yet in the `src/components/ui` directory, use `npx shadcn@latest add <component>` to add it.
 - Avoid overriding shadcn's default styles, unless necessary
 - Maintain consistency with shadcn's styling approach using Tailwind CSS
 - Use shadcn's built-in variant props when relevant and appropriate
@@ -22,6 +20,3 @@ For all AI/LLM related development:
 - Refer to llms/vercel-ai-sdk.txt for more information about the AI sdk
 
 These tools should be the default choice unless there's a specific requirement that cannot be met using them.
-
-## Writing features
-- When writing features, update the files in the planning directory to track progress, and also provide helpful context and notes for developers seeking to understand the project.
