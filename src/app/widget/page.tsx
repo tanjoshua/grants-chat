@@ -1,8 +1,8 @@
 import { ChatWidgetContainer } from '@/components/widget/chat-widget-container'
 
-export default function WidgetPage({ searchParams }: { searchParams: { embed?: string } }) {
+export default async function WidgetPage({ searchParams }: { searchParams: Promise<{ embed?: string }> }) {
   // Check if this is being loaded as an embed
-  const isEmbed = searchParams.embed === 'true';
+  const isEmbed = (await searchParams).embed === 'true';
   
   if (isEmbed) {
     // Just render the chat widget without any containers for embedding
