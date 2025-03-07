@@ -11,17 +11,24 @@ export function ChatWidgetContainer() {
   useEffect(() => {
     try {
       setIsIframe(window.self !== window.top)
-    } catch (e) {
+    } catch {
       // If we can't access window.top due to cross-origin issues, we're in an iframe
       setIsIframe(true)
     }
   }, [])
 
-  // When in an iframe, always show the chat interface since the button is in the parent window
-  // For non-iframe usage, we'll still need the open/close functionality
+  // When in an iframe, we need to communicate with the parent window
+  // For non-iframe usage, we'll just use the local state
   const handleClose = () => {
-    if (!isIframe) {
-      setIsOpen(false)
+    if (isIframe) {
+      // Send a message to the parent window to hide the iframe
+      try {
+        window.parent.postMessage({ type: 'CHAT_WIDGET_CLOSE' }, '*');
+      } catch (error) {
+        console.error('Failed to communicate with parent window:', error);
+      }
+    } else {
+      setIsOpen(false);
     }
   }
 

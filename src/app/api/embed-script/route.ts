@@ -92,6 +92,13 @@ export async function GET(req: Request) {
     const frameVisible = iframe.style.display === 'block';
     iframe.style.display = frameVisible ? 'none' : 'block';
   });
+
+  // Listen for close messages from the iframe
+  window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'CHAT_WIDGET_CLOSE') {
+      iframe.style.display = 'none';
+    }
+  });
 })();
   `;
 
