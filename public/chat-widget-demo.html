@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Widget Demo</title>
+  <title>Singapore Government Grants Information</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -11,79 +12,195 @@
       margin: 0 auto;
       padding: 40px 20px;
       line-height: 1.6;
+      color: #333;
     }
+
     h1 {
       font-size: 2.5rem;
       margin-bottom: 1rem;
+      color: #1a5a96;
     }
+
     h2 {
       font-size: 1.8rem;
       margin: 2rem 0 1rem;
+      color: #1a5a96;
     }
+
+    h3 {
+      font-size: 1.3rem;
+      color: #1a5a96;
+    }
+
     p {
       margin-bottom: 1rem;
     }
+
+    .card {
+      background-color: #f9f9f9;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .grant-eligibility {
+      background-color: #e8f4ff;
+      padding: 1rem;
+      border-radius: 5px;
+      border-left: 4px solid #1a5a96;
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-notice {
+      background-color: #fffbdd;
+      padding: 1rem;
+      border-radius: 5px;
+      border-left: 4px solid #ffdf5d;
+      margin-bottom: 1.5rem;
+      margin-top: 2rem;
+      font-weight: bold;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #1a5a96;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn:hover {
+      background-color: #134b7c;
+    }
+
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
     code {
       background-color: #f5f5f5;
       padding: 0.2rem 0.4rem;
       border-radius: 3px;
       font-family: Menlo, Monaco, 'Courier New', monospace;
     }
-    pre {
-      background-color: #f5f5f5;
-      padding: 1rem;
-      border-radius: 5px;
-      overflow: auto;
-      font-family: Menlo, Monaco, 'Courier New', monospace;
-    }
-    .highlight {
-      background-color: #fffbdd;
-      padding: 1rem;
-      border-radius: 5px;
-      border-left: 4px solid #ffdf5d;
-      margin-bottom: 1.5rem;
-    }
   </style>
 </head>
+
 <body>
-  <h1>AI Chat Widget Implementation</h1>
-  
-  <p>This page demonstrates how to embed the AI Chat Widget on any website. You can see the chat widget in action by clicking the chat icon in the bottom-right corner.</p>
-  
-  <div class="highlight">
-    <p><strong>Note:</strong> This is just a demonstration. The real chat widget would be integrated with your AI backend and customized to your needs.</p>
+  <div class="demo-notice">
+    <p>⚠️ DEMO PAGE: This is a demonstration page showing how the chat assistant widget works. The information displayed
+      is placeholder content.</p>
   </div>
-  
-  <h2>How to Embed the Chat Widget</h2>
-  
-  <p>To add the chat widget to your own website, simply include the following script tag at the end of your HTML body:</p>
-  
-  <pre><code>&lt;script src="https://your-domain.com/api/embed-script"&gt;&lt;/script&gt;</code></pre>
-  
-  <p>Replace <code>your-domain.com</code> with your actual domain where the Next.js application is hosted.</p>
-  
-  <h2>Customization</h2>
-  
-  <p>The chat widget can be customized to match your website's branding and style. You can modify the colors, sizes, and other properties by editing the widget's source code.</p>
-  
-  <h2>Features</h2>
-  
-  <ul>
-    <li>Responsive design that works on desktop and mobile</li>
-    <li>Real-time AI-powered chat using your custom model</li>
-    <li>Markdown support for rich formatting</li>
-    <li>Minimalist UI that can be customized to match your brand</li>
-  </ul>
+
+  <h1>Singapore Government Grants</h1>
+
+  <p>Welcome to the Singapore Government Grants Information Portal. This page provides information about various
+    government grants available for businesses and individuals in Singapore.</p>
+
+  <h2>Featured Business Grants</h2>
+
+  <div class="card">
+    <h3>Productivity Solutions Grant (PSG)</h3>
+    <p>The Productivity Solutions Grant (PSG) supports businesses in the adoption of productivity solutions and
+      equipment. It covers sector-specific solutions including retail, food, logistics, precision engineering,
+      construction, and landscaping.</p>
+    <p><strong>Grant Amount:</strong> Up to 70% funding support</p>
+    <a href="#" class="btn">Learn More</a>
+  </div>
+
+  <div class="card">
+    <h3>Enterprise Development Grant (EDG)</h3>
+    <p>The Enterprise Development Grant supports projects that help Singapore companies grow and transform. This grant
+      supports projects under three pillars: Core Capabilities, Innovation and Productivity, and Market Access.</p>
+    <p><strong>Grant Amount:</strong> Up to 70% of qualifying costs</p>
+    <a href="#" class="btn">Learn More</a>
+  </div>
+
+  <h2>Eligibility Criteria</h2>
+
+  <div class="grant-eligibility">
+    <p>To be eligible for most government grants, businesses must:</p>
+    <ul>
+      <li>Be registered and operating in Singapore</li>
+      <li>Have at least 30% local shareholding</li>
+      <li>Be in a financially viable position to start and complete the project</li>
+    </ul>
+  </div>
+
+  <h2>Application Process</h2>
+
+  <table>
+    <tr>
+      <th>Step</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>1. Check Eligibility</td>
+      <td>Verify if your business meets the eligibility criteria for the grant.</td>
+    </tr>
+    <tr>
+      <td>2. Prepare Documents</td>
+      <td>Gather necessary documents including business profile, financial statements, and project proposal.</td>
+    </tr>
+    <tr>
+      <td>3. Submit Application</td>
+      <td>Submit your application through the Business Grants Portal.</td>
+    </tr>
+    <tr>
+      <td>4. Evaluation</td>
+      <td>Your application will be evaluated by the relevant government agency.</td>
+    </tr>
+    <tr>
+      <td>5. Outcome Notification</td>
+      <td>You will be notified of the outcome of your application.</td>
+    </tr>
+  </table>
+
+  <h2>Need Help?</h2>
+  <p>Use our chat assistant to get quick answers about government grants. Click the chat icon in the bottom-right corner
+    to get started.</p>
+
+  <div class="footer">
+    <p>© 2025 Singapore Government Grants (Demo). All rights reserved.</p>
+    <p>This is a demonstration page. The information provided is for illustrative purposes only.</p>
+  </div>
 
   <!-- Include the chat widget -->
   <script src="/api/embed-script"></script>
-  
-  <!-- Example of manual embedding (alternative to using the embed script) -->
-  <div class="highlight" style="margin-top: 40px">
-    <h3>Implementation Notes</h3>
-    <p>The chat widget above is loaded from <code>/api/embed-script</code>. You can inspect the page source to see how it works.</p>
-    <p>In a production environment, you would include the script tag as follows:</p>
-    <pre><code>&lt;script src="https://your-domain.com/api/embed-script"&gt;&lt;/script&gt;</code></pre>
+
+  <div class="demo-notice">
+    <p>⚠️ DEMO PAGE: The chat widget above is loaded from <code>/api/embed-script</code>. This page is designed to
+      demonstrate how the widget can be embedded in a website about Singapore government grants.</p>
   </div>
 </body>
+
 </html>

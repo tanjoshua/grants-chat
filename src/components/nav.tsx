@@ -4,10 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { ExternalLink } from 'lucide-react';
 
 const navigation = [
   { name: 'Chat', href: '/' },
   { name: 'Settings', href: '/settings' },
+  { name: 'Widget', href: '/chat-widget-demo.html', target: '_blank' },
 ];
 
 export function Nav() {
@@ -32,12 +34,16 @@ export function Nav() {
             <Link
               key={item.href}
               href={item.href}
+              target={item.target}
               className={cn(
-                'transition-colors hover:text-foreground/80',
+                'transition-colors hover:text-foreground/80 flex items-center gap-1',
                 pathname === item.href ? 'text-foreground' : 'text-foreground/60'
               )}
             >
               {item.name}
+              {item.target === '_blank' && (
+                <ExternalLink size={14} className="inline-block" />
+              )}
             </Link>
           ))}
         </div>

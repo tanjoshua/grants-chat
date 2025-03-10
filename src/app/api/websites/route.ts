@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { documents } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { AI_MODEL } from '@/config/ai';
-import { generateChunks, processChunksInBatches } from '@/app/api/documents/upload/route';
+import { generateChunks, processChunksInBatches } from '@/lib/ai/embedding';
 
 export const maxDuration = 60;
 

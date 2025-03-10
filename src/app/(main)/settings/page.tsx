@@ -3,7 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { DocumentList } from '@/components/document-list';
 import { desc, eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { documents, embeddings} from '@/db/schema';
+import { documents } from '@/db/schema';
 import { SystemMessageForm } from '@/components/system-message-form';
 import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
 import { getSystemMessage, updateSystemMessage } from '@/app/actions/settings';
@@ -36,11 +36,6 @@ async function getDocuments() {
 async function deleteDocument(id: string) {
   'use server';
   
-  // Delete associated embeddings first (due to foreign key constraint)
-  await db
-    .delete(embeddings)
-    .where(eq(embeddings.documentId, id));
-
   // Delete the document
   await db
     .delete(documents)
