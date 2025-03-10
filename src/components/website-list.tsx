@@ -22,6 +22,7 @@ import { MoreHorizontal, Trash, RefreshCw, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import { WebsiteContentDialog } from '@/components/website-content-dialog';
 
 interface WebsiteListProps {
   websites: Document[];
@@ -30,6 +31,9 @@ interface WebsiteListProps {
 export function WebsiteList({ websites }: WebsiteListProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState<Record<string, boolean>>({});
+  const [selectedWebsiteId, setSelectedWebsiteId] = useState<string | null>(null);
+  const [selectedWebsiteName, setSelectedWebsiteName] = useState<string | null>(null);
+  const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
 
   if (!websites.length) {
     return (
@@ -108,8 +112,20 @@ export function WebsiteList({ websites }: WebsiteListProps) {
     }
   };
 
+  function handleViewContent(id: string, name: string) {
+    setSelectedWebsiteId(id);
+    setSelectedWebsiteName(name);
+    setIsContentDialogOpen(true);
+  }
+
   return (
     <div className="rounded-md border">
+      <WebsiteContentDialog 
+        websiteId={selectedWebsiteId}
+        websiteName={selectedWebsiteName}
+        isOpen={isContentDialogOpen}
+        onOpenChange={setIsContentDialogOpen}
+      />
       <Table>
         <TableHeader>
           <TableRow>
@@ -122,7 +138,11 @@ export function WebsiteList({ websites }: WebsiteListProps) {
         </TableHeader>
         <TableBody>
           {websites.map((website) => (
-            <TableRow key={website.id}>
+            <TableRow 
+              key={website.id} 
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => handleViewContent(website.id, website.name)}
+            >
               <TableCell className="font-medium">{website.name}</TableCell>
               <TableCell>
                 <div className="flex items-center gap-2">
@@ -132,6 +152,7 @@ export function WebsiteList({ websites }: WebsiteListProps) {
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="text-muted-foreground hover:text-foreground"
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <ExternalLink size={14} />
                   </a>
@@ -144,7 +165,12 @@ export function WebsiteList({ websites }: WebsiteListProps) {
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" disabled={loading[website.id]}>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      disabled={loading[website.id]}
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {loading[website.id] ? (
                         <RefreshCw size={16} className="animate-spin" />
                       ) : (
@@ -155,14 +181,20 @@ export function WebsiteList({ websites }: WebsiteListProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem 
-                      onClick={() => handleRefresh(website.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRefresh(website.id);
+                      }}
                       className="flex items-center gap-2"
                     >
                       <RefreshCw size={14} />
                       <span>Refresh</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => handleDelete(website.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(website.id);
+                      }}
                       className="flex items-center gap-2 text-red-600"
                     >
                       <Trash size={14} />
