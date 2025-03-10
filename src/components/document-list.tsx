@@ -10,10 +10,12 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Trash2 } from 'lucide-react';
+import { Trash2} from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
+import { DocumentContentDialog } from '@/components/document-content-dialog';
+import { useState } from 'react';
 
 interface Document {
   id: string;
@@ -59,6 +61,8 @@ export function DocumentList({
 }) {
   const router = useRouter();
   const { toast } = useToast();
+  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
+  const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
 
   async function handleDelete(id: string) {
     const result = await deleteDocument(id);
@@ -78,6 +82,11 @@ export function DocumentList({
     }
   }
 
+  function handleViewContent(id: string) {
+    setSelectedDocumentId(id);
+    setIsContentDialogOpen(true);
+  }
+
   if (!documents?.length) {
     return (
       <div className="text-center text-muted-foreground p-8">
@@ -88,6 +97,11 @@ export function DocumentList({
 
   return (
     <div className="rounded-md border">
+      <DocumentContentDialog 
+        documentId={selectedDocumentId}
+        isOpen={isContentDialogOpen}
+        onOpenChange={setIsContentDialogOpen}
+      />
       <Table>
         <TableHeader>
           <TableRow>
@@ -100,7 +114,11 @@ export function DocumentList({
         </TableHeader>
         <TableBody>
           {documents.map((doc) => (
-            <TableRow key={doc.id}>
+            <TableRow 
+              key={doc.id} 
+              className="cursor-pointer hover:bg-muted/50"
+              onClick={() => handleViewContent(doc.id)}
+            >
               <TableCell className="font-medium">{doc.name}</TableCell>
               <TableCell>
                 <Badge variant="secondary" className={getStatusColor(doc.status)}>
@@ -117,7 +135,11 @@ export function DocumentList({
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => handleDelete(doc.id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(doc.id);
+                  }}
+                  title="Delete document"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
