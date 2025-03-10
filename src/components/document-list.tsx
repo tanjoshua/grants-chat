@@ -62,6 +62,7 @@ export function DocumentList({
   const router = useRouter();
   const { toast } = useToast();
   const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
+  const [selectedDocumentName, setSelectedDocumentName] = useState<string | null>(null);
   const [isContentDialogOpen, setIsContentDialogOpen] = useState(false);
 
   async function handleDelete(id: string) {
@@ -82,8 +83,9 @@ export function DocumentList({
     }
   }
 
-  function handleViewContent(id: string) {
+  function handleViewContent(id: string, name: string) {
     setSelectedDocumentId(id);
+    setSelectedDocumentName(name);
     setIsContentDialogOpen(true);
   }
 
@@ -99,6 +101,7 @@ export function DocumentList({
     <div className="rounded-md border">
       <DocumentContentDialog 
         documentId={selectedDocumentId}
+        documentName={selectedDocumentName}
         isOpen={isContentDialogOpen}
         onOpenChange={setIsContentDialogOpen}
       />
@@ -117,7 +120,7 @@ export function DocumentList({
             <TableRow 
               key={doc.id} 
               className="cursor-pointer hover:bg-muted/50"
-              onClick={() => handleViewContent(doc.id)}
+              onClick={() => handleViewContent(doc.id, doc.name)}
             >
               <TableCell className="font-medium">{doc.name}</TableCell>
               <TableCell>

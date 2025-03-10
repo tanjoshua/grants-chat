@@ -17,15 +17,17 @@ interface DocumentContentDialogProps {
   documentId: string | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  documentName?: string | null;
 }
 
 export function DocumentContentDialog({
   documentId,
   isOpen,
   onOpenChange,
+  documentName: initialDocumentName,
 }: DocumentContentDialogProps) {
   const [content, setContent] = useState<string | null>(null);
-  const [documentName, setDocumentName] = useState<string | null>(null);
+  const [documentName, setDocumentName] = useState<string | null>(initialDocumentName || null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -64,10 +66,17 @@ export function DocumentContentDialog({
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       setContent(null);
-      setDocumentName(null);
+      setDocumentName(initialDocumentName || null);
     }
     onOpenChange(open);
   };
+
+  // Update documentName when initialDocumentName changes
+  useEffect(() => {
+    if (initialDocumentName) {
+      setDocumentName(initialDocumentName);
+    }
+  }, [initialDocumentName]);
 
   // Fetch content when documentId or isOpen changes
   useEffect(() => {
