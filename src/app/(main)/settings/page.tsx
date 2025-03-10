@@ -8,6 +8,7 @@ import { SystemMessageForm } from '@/components/system-message-form';
 import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
 import { getSystemMessage, updateSystemMessage } from '@/app/actions/settings';
 import { getSuggestedQuestions, deleteSuggestedQuestion } from '@/app/actions/suggested-questions';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 async function getDocuments() {
   try {
@@ -70,40 +71,50 @@ export default async function SettingsPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Upload Section */}
-          <div className="rounded-lg border p-4">
-            <h2 className="text-lg font-semibold mb-2">Upload Document</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Add documents to enhance chat responses with relevant information.
-            </p>
-            <DocumentUpload onUploadComplete={refetchDocuments} />
-          </div>
-
-          {/* Document List Section */}
-          <div className="rounded-lg border p-4">
-            <h2 className="text-lg font-semibold mb-2">Your Documents</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              View and manage your uploaded documents.
-            </p>
-            <DocumentList 
-              documents={docs} 
-              deleteDocument={deleteDocument}
+        <Tabs defaultValue="general" className="w-full">
+          <TabsList className="mb-4 justify-start">
+            <TabsTrigger value="general">General</TabsTrigger>
+            <TabsTrigger value="documents">Documents</TabsTrigger>
+          </TabsList>
+          
+          {/* General Tab Content */}
+          <TabsContent value="general" className="space-y-6">
+            <SystemMessageForm 
+              initialMessage={systemMessage}
+              onSave={updateSystemMessage}
             />
-          </div>
-        </div>
+            <SuggestedQuestionsForm 
+              questions={questions}
+              onDelete={deleteSuggestedQuestion}
+            />
+          </TabsContent>
+          
+          {/* Documents Tab Content */}
+          <TabsContent value="documents">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Upload Section */}
+              <div className="rounded-lg border p-4">
+                <h2 className="text-lg font-semibold mb-2">Upload Document</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Add documents to enhance chat responses with relevant information.
+                </p>
+                <DocumentUpload onUploadComplete={refetchDocuments} />
+              </div>
 
-        {/* Settings Forms */}
-        <div className="space-y-6">
-          <SystemMessageForm 
-            initialMessage={systemMessage}
-            onSave={updateSystemMessage}
-          />
-          <SuggestedQuestionsForm 
-            questions={questions}
-            onDelete={deleteSuggestedQuestion}
-          />
-        </div>
+              {/* Document List Section */}
+              <div className="rounded-lg border p-4">
+                <h2 className="text-lg font-semibold mb-2">Your Documents</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  View and manage your uploaded documents.
+                </p>
+                <DocumentList 
+                  documents={docs} 
+                  deleteDocument={deleteDocument}
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
