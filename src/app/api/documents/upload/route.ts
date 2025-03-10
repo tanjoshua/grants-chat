@@ -8,7 +8,7 @@ import mammoth from 'mammoth';
 
 export const maxDuration = 60;
 
-const generateChunks = (input: string, chunkSize: number = 1500, overlap: number = 250): string[] => {
+export const generateChunks = (input: string, chunkSize: number = 1500, overlap: number = 250): string[] => {
   try {
     // Safety check for input
     if (!input || typeof input !== 'string') {
@@ -166,7 +166,7 @@ const generateChunks = (input: string, chunkSize: number = 1500, overlap: number
 };
 
 // Process chunks in batches to avoid payload size limits
-async function processChunksInBatches(documentId: string, chunks: string[], batchSize: number = 20) {
+export async function processChunksInBatches(documentId: string, chunks: string[], batchSize: number = 20) {
   console.log(`Processing ${chunks.length} chunks in batches of ${batchSize}`);
   
   for (let i = 0; i < chunks.length; i += batchSize) {

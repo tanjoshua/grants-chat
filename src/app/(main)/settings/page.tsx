@@ -80,7 +80,7 @@ export default async function SettingsPage() {
           <TabsList className="mb-4 justify-start">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
-            <TabsTrigger value="websites">Websites (WIP)</TabsTrigger>
+            <TabsTrigger value="websites">Websites</TabsTrigger>
           </TabsList>
           
           {/* General Tab Content */}
@@ -124,8 +124,7 @@ export default async function SettingsPage() {
           {/* Websites Tab Content */}
           <TabsContent value="websites">
             <div className="grid gap-6 md:grid-cols-2">
-              {/* Website Form Section */}
-                <WebsiteForm />
+              <WebsiteForm onComplete={refetchDocuments} />
 
               {/* Website List Section */}
               <div className="rounded-lg border p-4">

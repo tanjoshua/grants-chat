@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteWebsite, updateWebsiteStatus } from '@/app/actions/websites';
+import { deleteWebsite } from '@/app/actions/websites';
 import { type Document } from '@/db/schema';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -12,13 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Trash, RefreshCw, ExternalLink } from 'lucide-react';
+
+import { Trash2, RefreshCw, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
@@ -71,33 +66,7 @@ export function WebsiteList({ websites }: WebsiteListProps) {
     }
   }
 
-  async function handleRefresh(id: string) {
-    try {
-      setLoading(prev => ({ ...prev, [id]: true }));
-      const result = await updateWebsiteStatus(id, 'pending');
-      
-      if (result.error) {
-        toast({
-          title: 'Error',
-          description: result.error,
-          variant: 'destructive',
-        });
-      } else {
-        toast({
-          title: 'Success',
-          description: 'Website status updated',
-        });
-      }
-    } catch  {
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred',
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(prev => ({ ...prev, [id]: false }));
-    }
-  }
+
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -163,45 +132,22 @@ export function WebsiteList({ websites }: WebsiteListProps) {
                 {website.updatedAt ? formatDistanceToNow(new Date(website.updatedAt), { addSuffix: true }) : 'Never'}
               </TableCell>
               <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      disabled={loading[website.id]}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {loading[website.id] ? (
-                        <RefreshCw size={16} className="animate-spin" />
-                      ) : (
-                        <MoreHorizontal size={16} />
-                      )}
-                      <span className="sr-only">Open menu</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRefresh(website.id);
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <RefreshCw size={14} />
-                      <span>Refresh</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(website.id);
-                      }}
-                      className="flex items-center gap-2 text-red-600"
-                    >
-                      <Trash size={14} />
-                      <span>Delete</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  disabled={loading[website.id]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(website.id);
+                  }}
+                  title="Delete website"
+                >
+                  {loading[website.id] ? (
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
+                </Button>
               </TableCell>
             </TableRow>
           ))}

@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { addWebsite } from '@/app/actions/websites';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { useRouter } from 'next/navigation';
 
-export function WebsiteForm() {
+export function WebsiteForm({ onComplete }: { onComplete?: () => Promise<void> }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const router = useRouter();
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -18,12 +20,18 @@ export function WebsiteForm() {
 
     try {
       const formData = new FormData(event.currentTarget);
-      const result = await addWebsite(formData);
+      
+      const response = await fetch('/api/websites', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      const data = await response.json();
 
-      if (result.error) {
+      if (!response.ok) {
         toast({
           title: 'Error',
-          description: result.error,
+          description: data.error || 'Failed to add website',
           variant: 'destructive',
         });
       } else {
@@ -34,13 +42,27 @@ export function WebsiteForm() {
         
         // Reset the form
         (event.target as HTMLFormElement).reset();
+        
+        // Call onComplete to refetch websites
+        if (onComplete) {
+          await onComplete();
+        } else {
+          // Fallback to router refresh if no callback provided
+          router.refresh();
+        }
       }
-    } catch {
+    } catch (error) {
+      console.error('Error adding website:', error);
       toast({
         title: 'Error',
         description: 'An unexpected error occurred',
         variant: 'destructive',
       });
+      
+      // Call onComplete to refetch websites even when there's an error
+      if (onComplete) {
+        await onComplete();
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -51,7 +73,7 @@ export function WebsiteForm() {
       <CardHeader>
         <CardTitle>Add Website</CardTitle>
         <CardDescription>
-          Add a website to be scraped for data
+          Add a website to be scraped for data. Static HTML websites work best, as dynamically rendered content (JavaScript-based) cannot be properly scraped.
         </CardDescription>
       </CardHeader>
       <CardContent>

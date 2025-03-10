@@ -14,7 +14,7 @@ export const documents = pgTable('documents', {
 
 export const embeddings = pgTable('embeddings', {
   id: uuid('id').primaryKey().defaultRandom(),
-  documentId: uuid('document_id').references(() => documents.id),
+  documentId: uuid('document_id').references(() => documents.id, { onDelete: 'cascade' }),
   content: text('content').notNull(),
   embedding: vector('embedding', { dimensions: 1536 }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()

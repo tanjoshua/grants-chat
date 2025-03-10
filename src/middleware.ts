@@ -5,9 +5,6 @@ const USERNAME = '71';
 const PASSWORD = 'ilove71';
 
 export function middleware(request: NextRequest) {
-  // Add logging to help debug middleware triggering
-  console.log('Middleware triggered for path:', request.nextUrl.pathname);
-  console.log('Request headers:', Object.fromEntries(request.headers.entries()));
   
   // Safety check - double verify we're only on the settings page
   const pathname = request.nextUrl.pathname;
@@ -15,7 +12,6 @@ export function middleware(request: NextRequest) {
   // This should be redundant with the matcher, but just to be safe
   if (pathname !== '/settings') {
     // If we somehow got here on a different path, just continue without auth
-    console.log('Not settings page, skipping auth check');
     return NextResponse.next();
   }
   
