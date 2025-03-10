@@ -205,7 +205,7 @@ export async function POST(request: Request) {
     // Read file content based on file type
     let content = '';
     
-    // Get file extension from filename
+    // Get file extension from the file name
     const fileExtension = file.name.split('.').pop()?.toLowerCase();
     
     if (fileExtension === 'docx' || fileExtension === 'doc') {
@@ -244,8 +244,9 @@ export async function POST(request: Request) {
 
     // Create document record
     const [document] = await db.insert(documents).values({
-      filename: file.name,
+      name: file.name,
       content,
+      sourceType: 'upload',
       status: 'processing',
       metadata: {
         fileType: file.type,
@@ -271,7 +272,7 @@ export async function POST(request: Request) {
         message: 'Document uploaded and processed successfully',
         document: {
           id: document.id,
-          filename: document.filename,
+          name: document.name,
           status: 'ready',
           metadata: document.metadata
         }

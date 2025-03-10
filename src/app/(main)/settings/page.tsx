@@ -3,19 +3,22 @@ import { revalidatePath } from 'next/cache';
 import { DocumentList } from '@/components/document-list';
 import { desc, eq } from 'drizzle-orm';
 import { db } from '@/db';
-import { documents, embeddings } from '@/db/schema';
+import { documents, embeddings} from '@/db/schema';
 import { SystemMessageForm } from '@/components/system-message-form';
 import { SuggestedQuestionsForm } from '@/components/suggested-questions-form';
 import { getSystemMessage, updateSystemMessage } from '@/app/actions/settings';
 import { getSuggestedQuestions, deleteSuggestedQuestion } from '@/app/actions/suggested-questions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { WebsiteForm } from '@/components/website-form';
+import { WebsiteList } from '@/components/website-list';
+import { getWebsites } from '@/app/actions/websites';
 
 async function getDocuments() {
   try {
     return await db
       .select({
         id: documents.id,
-        filename: documents.filename,
+        name: documents.name,
         status: documents.status,
         metadata: documents.metadata,
         createdAt: documents.createdAt,
@@ -55,10 +58,11 @@ async function refetchDocuments() {
 }
 
 export default async function SettingsPage() {
-  const [docs, systemMessage, questions] = await Promise.all([
+  const [docs, systemMessage, questions, websites] = await Promise.all([
     getDocuments(),
     getSystemMessage(),
-    getSuggestedQuestions()
+    getSuggestedQuestions(),
+    getWebsites()
   ]);
 
   return (
@@ -75,6 +79,7 @@ export default async function SettingsPage() {
           <TabsList className="mb-4 justify-start">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="documents">Documents</TabsTrigger>
+            <TabsTrigger value="websites">Websites (WIP)</TabsTrigger>
           </TabsList>
           
           {/* General Tab Content */}
@@ -111,6 +116,24 @@ export default async function SettingsPage() {
                   documents={docs} 
                   deleteDocument={deleteDocument}
                 />
+              </div>
+            </div>
+          </TabsContent>
+          
+          {/* Websites Tab Content */}
+          <TabsContent value="websites">
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Website Form Section */}
+                <WebsiteForm />
+
+              {/* Website List Section */}
+              <div className="rounded-lg border p-4">
+                <h2 className="text-lg font-semibold mb-2">Your Websites</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  View and manage websites to be scraped for data. These websites will be processed
+                  similarly to uploaded documents, with their content chunked and embedded for AI responses.
+                </p>
+                <WebsiteList websites={websites} />
               </div>
             </div>
           </TabsContent>

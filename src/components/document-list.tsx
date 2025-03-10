@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 
 interface Document {
   id: string;
-  filename: string;
+  name: string;
   status: string;
   metadata: Record<string, unknown> | null;
   createdAt: Date | null;
@@ -101,7 +101,7 @@ export function DocumentList({
         <TableBody>
           {documents.map((doc) => (
             <TableRow key={doc.id}>
-              <TableCell className="font-medium">{doc.filename}</TableCell>
+              <TableCell className="font-medium">{doc.name}</TableCell>
               <TableCell>
                 <Badge variant="secondary" className={getStatusColor(doc.status)}>
                   {doc.status}

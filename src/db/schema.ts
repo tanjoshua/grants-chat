@@ -2,12 +2,14 @@ import { pgTable, uuid, text, jsonb, timestamp, vector,index } from 'drizzle-orm
 
 export const documents = pgTable('documents', {
   id: uuid('id').primaryKey().defaultRandom(),
-  filename: text('filename').notNull(),
+  name: text('name').notNull(),
   content: text('content').notNull(),
+  url: text('url'), // Optional field to store URL if document is from a website
+  sourceType: text('source_type').default('upload').notNull(), // 'upload' or 'website'
   metadata: jsonb('metadata').$type<Record<string, unknown>>(),
   status: text('status').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow() // Also used to track when a website was last scraped
 });
 
 export const embeddings = pgTable('embeddings', {
