@@ -25,6 +25,7 @@ async function getDocuments() {
         updatedAt: documents.updatedAt,
       })
       .from(documents)
+      .where(eq(documents.sourceType, 'upload'))
       .orderBy(desc(documents.createdAt));
   } catch (error) {
     console.error('Error fetching documents:', error);
