@@ -3,7 +3,7 @@ import { generateText } from 'ai';
 import { db } from '@/db';
 import { documents } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { AI_MODEL } from '@/config/ai';
+import { MINI_MODEL } from '@/config/ai';
 import { generateChunks, processChunksInBatches } from '@/lib/ai/embedding';
 
 export const maxDuration = 60;
@@ -37,7 +37,7 @@ async function fetchWebsiteContent(url: string): Promise<string> {
       .trim();
 
     const { text } = await generateText({
-      model: AI_MODEL,
+      model: MINI_MODEL,
       prompt: `Format the following data to be readable. Do not remove or add any information: ${textContent}`,
     });
     
