@@ -51,7 +51,7 @@ export function SystemMessageForm({ initialMessage, onSave }: SystemMessageFormP
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Enter instructions for the AI assistant..."
-            className="min-h-[200px] resize-none"
+            className="min-h-[500px] resize-none"
           />
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">

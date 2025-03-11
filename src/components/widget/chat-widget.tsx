@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { useEffect, useRef } from 'react';
 import { Loader2, X, Send, MessageSquare } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
+import { widgetComponents, reactMarkdownRemarkDirective } from '../markdown';
+import directive from "remark-directive";
 
 interface ChatWidgetProps {
   isOpen: boolean;
@@ -95,25 +97,8 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                           message.content
                         ) : (
                           <ReactMarkdown
-                            components={{
-                              h1: ({children}) => <h1 className="text-sm font-bold mb-2">{children}</h1>,
-                              h2: ({children}) => <h2 className="text-xs font-bold mb-2">{children}</h2>,
-                              h3: ({children}) => <h3 className="text-xs font-bold mb-1">{children}</h3>,
-                              p: ({children}) => <p className="mb-1 last:mb-0">{children}</p>,
-                              ul: ({children}) => <ul className="list-disc pl-3 mb-1 last:mb-0">{children}</ul>,
-                              ol: ({children}) => <ol className="list-decimal pl-3 mb-1 last:mb-0">{children}</ol>,
-                              li: ({children}) => <li className="mb-0.5 last:mb-0">{children}</li>,
-                              a: ({href, children}) => (
-                                <a
-                                  href={href}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                                >
-                                  {children}
-                                </a>
-                              )
-                            }}
+                        remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+                            components={widgetComponents}
                           >
                             {message.content}
                           </ReactMarkdown>

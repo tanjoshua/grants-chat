@@ -10,6 +10,8 @@ import { Loader2 } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { SuggestedQuestions } from '@/components/suggested-questions';
 import type { SuggestedQuestion } from '@/db/schema';
+import directive from "remark-directive";
+import { components, reactMarkdownRemarkDirective } from './markdown';
 
 interface ChatProps {
   initialQuestions: SuggestedQuestion[];
@@ -71,28 +73,8 @@ export function Chat({ initialQuestions }: ChatProps) {
                     message.content
                   ) : (
                     <ReactMarkdown
-                      components={{
-                        h1: ({children}) => <h1 className="text-2xl font-bold mb-4">{children}</h1>,
-                        h2: ({children}) => <h2 className="text-xl font-bold mb-3">{children}</h2>,
-                        h3: ({children}) => <h3 className="text-lg font-bold mb-2">{children}</h3>,
-                        h4: ({children}) => <h4 className="text-base font-bold mb-2">{children}</h4>,
-                        h5: ({children}) => <h5 className="text-sm font-bold mb-1">{children}</h5>,
-                        h6: ({children}) => <h6 className="text-sm font-bold mb-1">{children}</h6>,
-                        p: ({children}) => <p className="mb-2 last:mb-0">{children}</p>,
-                        ul: ({children}) => <ul className="list-disc pl-4 mb-2 last:mb-0">{children}</ul>,
-                        ol: ({children}) => <ol className="list-decimal pl-4 mb-2 last:mb-0">{children}</ol>,
-                        li: ({children}) => <li className="mb-1 last:mb-0">{children}</li>,
-                        a: ({href, children}) => (
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 dark:text-blue-400 underline hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
-                          >
-                            {children}
-                          </a>
-                        )
-                      }}
+                      remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+                      components={components}
                     >
                       {message.content}
                     </ReactMarkdown>
