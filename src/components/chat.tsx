@@ -18,7 +18,7 @@ interface ChatProps {
 }
 
 export function Chat({ initialQuestions }: ChatProps) {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, append } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, append,status } = useChat({
     api: "/api/chat",
   });
 
@@ -41,8 +41,8 @@ export function Chat({ initialQuestions }: ChatProps) {
     }
   }, [input]);
 
-  // Check if AI is currently responding (has a message but it's empty)
-  const isThinking = isLoading && (!messages.length || messages[messages.length - 1].role === 'user');
+  // Check if AI is currently thinking (waiting for response to begin)
+  const isThinking = status === 'submitted' && (!messages.length || messages[messages.length - 1].role === 'user');
 
   return (
     <div className="flex-1 flex flex-col">
@@ -72,12 +72,19 @@ export function Chat({ initialQuestions }: ChatProps) {
                     {message.role === 'user' ? (
                     message.content
                   ) : (
-                    <ReactMarkdown
-                      remarkPlugins={[directive, reactMarkdownRemarkDirective]}
-                      components={components}
-                    >
-                      {message.content}
-                    </ReactMarkdown>
+                    <>
+                      <ReactMarkdown
+                        remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+                        components={components}
+                      >
+                        {message.content}
+                      </ReactMarkdown>
+                      {status === 'streaming' && index === messages.length - 1 && (
+                        <div className="flex justify-end mt-2">
+                          <Loader2 className="h-2 w-2 animate-spin text-muted-foreground" />
+                        </div>
+                      )}
+                    </>
                   )}
                   </div>
                 </div>
@@ -165,19 +172,19 @@ export function Chat({ initialQuestions }: ChatProps) {
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (!isLoading && input.trim()) {
+                if (status === 'ready' && input.trim()) {
                   handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>);
                 }
               }
             }}
             placeholder="Tell me your business type and grant needs, e.g., I'm a startup seeking grants for HRMS equipment."
             className="flex-1 min-h-[40px] max-h-[150px] resize-none py-2"
-            disabled={isLoading}
+            disabled={status === 'submitted' || status === 'streaming'}
             autoComplete="off"
             rows={1}
           />
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? (
+          <Button type="submit" disabled={status === 'submitted' || status === 'streaming'}>
+            {status === 'submitted' || status === 'streaming' ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               'Send'
