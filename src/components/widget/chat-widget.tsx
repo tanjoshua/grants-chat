@@ -3,9 +3,9 @@
 import { useChat } from '@ai-sdk/react';
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useEffect, useRef } from 'react';
-import { Loader2, X, Send, MessageSquare } from "lucide-react";
+import { cn, copyToClipboard } from "@/lib/utils";
+import { useEffect, useRef, useState } from 'react';
+import { Loader2, X, Send, MessageSquare, Copy, Check } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { widgetComponents, reactMarkdownRemarkDirective } from '../markdown';
 import directive from "remark-directive";
@@ -23,6 +23,9 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  
+  // Using shared utility functions from utils.ts
 
   // Scroll to bottom when new messages are added or updated
   useEffect(() => {
@@ -86,12 +89,26 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                   >
                     <div
                       className={cn(
-                        "rounded-lg px-3 py-2 max-w-[85%] shadow-sm",
+                        "rounded-lg px-3 py-2 max-w-[85%] shadow-sm relative group",
                         message.role === 'user'
                           ? 'bg-primary text-primary-foreground ml-8 rounded-tr-none'
                           : 'bg-muted/70 mr-8 rounded-tl-none'
                       )}
                     >
+                      {message.role === 'assistant' && !(isLoading && index === messages.length - 1) && (
+                        <button
+                          onClick={() => copyToClipboard(message.content, message.id, setCopiedMessageId)}
+                          className="absolute right-1 top-1 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity bg-muted/80 hover:bg-muted/90"
+                          aria-label="Copy message"
+                          title={copiedMessageId === message.id ? "Copied!" : "Copy to clipboard"}
+                        >
+                          {copiedMessageId === message.id ? (
+                            <Check className="h-3 w-3 text-muted-foreground" />
+                          ) : (
+                            <Copy className="h-3 w-3 text-muted-foreground" />
+                          )}
+                        </button>
+                      )}
                       <div className="text-xs">
                         {message.role === 'user' ? (
                           message.content

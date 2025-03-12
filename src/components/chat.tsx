@@ -4,9 +4,9 @@ import { useChat } from '@ai-sdk/react';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Fragment, useEffect, useRef, } from 'react';
-import { Loader2 } from "lucide-react";
+import { cn, copyToClipboard } from "@/lib/utils";
+import { Fragment, useEffect, useRef, useState } from 'react';
+import { Loader2, Copy, Check } from "lucide-react";
 import ReactMarkdown from 'react-markdown';
 import { SuggestedQuestions } from '@/components/suggested-questions';
 import type { SuggestedQuestion } from '@/db/schema';
@@ -24,6 +24,9 @@ export function Chat({ initialQuestions }: ChatProps) {
 
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  
+  // Using shared utility functions from utils.ts
 
   // Scroll to bottom when new messages are added or updated
   useEffect(() => {
@@ -62,12 +65,27 @@ export function Chat({ initialQuestions }: ChatProps) {
               >
                 <div
                   className={cn(
-                    "rounded-lg px-4 py-3 max-w-[85%] shadow-sm",
+                    "rounded-lg px-4 py-3 max-w-[85%] shadow-sm relative group",
                     message.role === 'user'
                       ? 'bg-primary text-primary-foreground ml-12'
                       : 'bg-muted mr-12'
                   )}
                 >
+                  {message.role === 'assistant' && 
+                   !(status === 'streaming' && index === messages.length - 1) && (
+                    <button
+                      onClick={() => copyToClipboard(message.content, message.id, setCopiedMessageId)}
+                      className="absolute right-2 top-2 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity bg-muted hover:bg-muted/80"
+                      aria-label="Copy message"
+                      title={copiedMessageId === message.id ? "Copied!" : "Copy to clipboard"}
+                    >
+                      {copiedMessageId === message.id ? (
+                        <Check className="h-3.5 w-3.5 text-muted-foreground" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                    </button>
+                  )}
                   <div className="text-sm">
                     {message.role === 'user' ? (
                     message.content
