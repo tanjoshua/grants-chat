@@ -126,10 +126,12 @@ export function Chat({ initialQuestions }: ChatProps) {
                             } else if (part.type === 'tool-invocation') {
                               const toolCall = part.toolInvocation;
                               
-                              // Only show tool call UI when it's in progress
-                              if (toolCall.state === 'call' || toolCall.state === 'partial-call') {
-                                if (toolCall.toolName === 'getInformation') {
-                                  const args = toolCall.args as { question: string };
+                              if (toolCall.toolName === 'getInformation') {
+                                const args = toolCall.args as { question: string };
+                                
+                                // Show appropriate UI based on tool call state
+                                if (toolCall.state === 'call' || toolCall.state === 'partial-call') {
+                                  // Tool call in progress
                                   return (
                                     <div 
                                       key={`${message.id}-tool-${partIndex}`}
@@ -144,9 +146,23 @@ export function Chat({ initialQuestions }: ChatProps) {
                                       </p>
                                     </div>
                                   );
+                                } else if (toolCall.state === 'result') {
+                                  // Completed tool call - show completion message
+                                  return (
+                                    <div 
+                                      key={`${message.id}-tool-${partIndex}`}
+                                      className="bg-muted/20 rounded my-4 border border-muted text-xs text-muted-foreground"
+                                    >
+                                      <span className="flex items-center gap-1">
+                                        <Check className="h-3 w-3" />
+                                        Found information about &ldquo;{args?.question}&rdquo;
+                                      </span>
+                                    </div>
+                                  );
                                 }
                               }
-                              // Don't render completed tool calls
+                              
+                              // Don't render other tool calls
                               return null;
                             }
                             
