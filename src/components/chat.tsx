@@ -12,16 +12,23 @@ import { SuggestedQuestions } from '@/components/suggested-questions';
 import type { SuggestedQuestion } from '@/db/schema';
 import directive from "remark-directive";
 import { components, reactMarkdownRemarkDirective } from './markdown';
+import { ModelSelector } from '@/components/model-selector';
+import { DEFAULT_MODEL_ID } from '@/config/ai';
 
 interface ChatProps {
   initialQuestions: SuggestedQuestion[];
 }
 
 export function Chat({ initialQuestions }: ChatProps) {
-  const { messages, input, handleInputChange, handleSubmit, append,status } = useChat({
+  const [selectedModelId, setSelectedModelId] = useState<string>(DEFAULT_MODEL_ID);
+  
+  const { messages, input, handleInputChange, handleSubmit, append, status } = useChat({
     api: "/api/chat",
+    body: {
+      modelId: selectedModelId,
+    }
   });
-
+  
   const lastMessageRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
@@ -71,6 +78,7 @@ export function Chat({ initialQuestions }: ChatProps) {
                       : 'bg-muted mr-12'
                   )}
                 >
+                  {/* Model indicator removed as it's not accurately tracking per-message models */}
                   {message.role === 'assistant' && 
                    !(status === 'streaming' && index === messages.length - 1) && (
                     <button
@@ -178,6 +186,19 @@ export function Chat({ initialQuestions }: ChatProps) {
             />
           </div>
         )}
+        
+        <div className="flex items-center justify-end max-w-3xl mx-auto mb-2">
+          <ModelSelector 
+            selectedModelId={selectedModelId}
+            onModelChange={(modelId) => {
+              if (modelId !== selectedModelId) {
+                setSelectedModelId(modelId);
+                // Model change will be handled by the useEffect
+              }
+            }}
+          />
+        </div>
+        
         <form onSubmit={handleSubmit} className="flex gap-2 max-w-3xl mx-auto">
           <Textarea
             ref={textareaRef}
