@@ -187,18 +187,16 @@ export function Chat({ initialQuestions }: ChatProps) {
           </div>
         )}
         
-        <div className="flex items-center justify-end max-w-3xl mx-auto mb-2">
+        <div className="flex items-center max-w-3xl mx-auto">
           <ModelSelector 
             selectedModelId={selectedModelId}
             onModelChange={(modelId) => {
               if (modelId !== selectedModelId) {
                 setSelectedModelId(modelId);
-                // Model change will be handled by the useEffect
               }
             }}
           />
         </div>
-        
         <form onSubmit={handleSubmit} className="flex gap-2 max-w-3xl mx-auto">
           <Textarea
             ref={textareaRef}
@@ -230,6 +228,7 @@ export function Chat({ initialQuestions }: ChatProps) {
             )}
           </Button>
         </form>
+        
         <div className="text-xs text-muted-foreground text-center mt-2 max-w-3xl mx-auto">
           Disclaimer: AI-generated results may contain inaccuracies. Please review and use at your discretion. Last Updated 5 Mar 2025.
         </div>

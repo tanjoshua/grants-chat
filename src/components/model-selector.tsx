@@ -25,16 +25,16 @@ export function ModelSelector({
 
   return (
     <div className="flex items-center space-x-1">
-      <p className="text-sm text-muted-foreground mr-2 hidden sm:inline-block">Model:</p>
+      <p className="text-xs text-muted-foreground mr-1">Model:</p>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button 
-            variant="outline" 
+            variant="ghost" 
             size="sm" 
-            className="h-8 gap-1"
+            className="h-5 px-2 py-0 text-xs text-muted-foreground hover:text-foreground gap-1"
           >
             <span className="text-xs">{selectedModel.name}</span>
-            <ChevronDown className="h-3.5 w-3.5 opacity-50" />
+            <ChevronDown className="h-3 w-3 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -42,13 +42,13 @@ export function ModelSelector({
             <DropdownMenuItem
               key={model.id}
               className={cn(
-                "text-xs flex items-center gap-2 cursor-pointer",
+                "text-xs flex items-center gap-1 cursor-pointer py-1.5",
                 selectedModelId === model.id && "font-medium"
               )}
               onClick={() => onModelChange(model.id)}
             >
               <div className="flex-1">{model.name}</div>
-              {selectedModelId === model.id && <Check className="h-4 w-4" />}
+              {selectedModelId === model.id && <Check className="h-3 w-3" />}
             </DropdownMenuItem>
           ))}
         </DropdownMenuContent>
