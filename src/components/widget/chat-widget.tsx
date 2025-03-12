@@ -63,25 +63,32 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
         <div className="flex flex-col h-full">
           <div className="p-3 space-y-3 flex-1">
             {messages.length === 0 ? (
-                          <div className="bg-muted rounded-lg p-4 text-xs">
-              <h3 className="font-medium mb-2">Welcome to askHugh.ai</h3>
-              <p className="mb-2">This bot provides information on Singapore government grants like PSG, MRA, and Startup Founder grants etc. It can help you determine:</p>
-              <ul className="list-disc pl-5 space-y-1 mb-2">
-                <li>Eligibility requirements</li>
-                <li>Grant amounts and funding details</li>
-                <li>Application processes and deadlines</li>
-                <li>Suitable grants for your specific business needs</li>
-              </ul>
-              <p>Ask a question to get started!</p>
-            </div>
+              <div className="bg-muted rounded-lg p-4 text-xs">
+                <h3 className="font-medium mb-2">Welcome to askHugh.ai</h3>
+                <p className="mb-2">This bot provides information on Singapore government grants like PSG, MRA, and Startup Founder grants etc. It can help you determine:</p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li>Eligibility requirements</li>
+                  <li>Grant amounts and funding details</li>
+                  <li>Application processes and deadlines</li>
+                  <li>Suitable grants for your specific business needs</li>
+                </ul>
+                <p>Ask a question to get started!</p>
+              </div>
             ) : (
               messages.map((message, index) => {
-                if (!message.content) return null;
+                const isLastMessage = index === messages.length - 1;
+                const isMessageStreaming = isLoading && isLastMessage;
+                
+                // Get all text content for copy functionality
+                const textContent = message.parts
+                  .filter(part => part.type === 'text')
+                  .map(part => (part.type === 'text' ? part.text : ''))
+                  .join('');
                 
                 return (
                   <div
                     key={message.id}
-                    ref={index === messages.length - 1 ? lastMessageRef : null}
+                    ref={isLastMessage ? lastMessageRef : null}
                     className={cn(
                       "flex",
                       message.role === 'user' ? 'justify-end' : 'justify-start'
@@ -95,9 +102,9 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                           : 'bg-muted/70 mr-8 rounded-tl-none'
                       )}
                     >
-                      {message.role === 'assistant' && !(isLoading && index === messages.length - 1) && (
+                      {message.role === 'assistant' && !isMessageStreaming && (
                         <button
-                          onClick={() => copyToClipboard(message.content, message.id, setCopiedMessageId)}
+                          onClick={() => copyToClipboard(textContent, message.id, setCopiedMessageId)}
                           className="absolute right-1 top-1 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity bg-muted/80 hover:bg-muted/90"
                           aria-label="Copy message"
                           title={copiedMessageId === message.id ? "Copied!" : "Copy to clipboard"}
@@ -110,15 +117,52 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
                         </button>
                       )}
                       <div className="text-xs">
+                        {/* Message rendering based on role */}
                         {message.role === 'user' ? (
-                          message.content
+                          <div>{textContent}</div>
                         ) : (
-                          <ReactMarkdown
-                        remarkPlugins={[directive, reactMarkdownRemarkDirective]}
-                            components={widgetComponents}
-                          >
-                            {message.content}
-                          </ReactMarkdown>
+                          <>
+                            {message.parts.map((part, partIndex) => {
+                              if (part.type === 'text') {
+                                return (
+                                  <ReactMarkdown
+                                    key={`${message.id}-part-${partIndex}`}
+                                    remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+                                    components={widgetComponents}
+                                  >
+                                    {part.text}
+                                  </ReactMarkdown>
+                                );
+                              } else if (part.type === 'tool-invocation') {
+                                const toolCall = part.toolInvocation;
+                                
+                                // Only show tool call UI when it's in progress
+                                if (toolCall.state === 'call' || toolCall.state === 'partial-call') {
+                                  if (toolCall.toolName === 'getInformation') {
+                                    const args = toolCall.args as { question: string };
+                                    return (
+                                      <div 
+                                        key={`${message.id}-tool-${partIndex}`}
+                                        className="bg-muted/60 rounded p-2 my-1 border border-muted"
+                                      >
+                                        <div className="flex items-center gap-1 mb-1">
+                                          <Loader2 className="h-3 w-3 animate-spin" />
+                                          <span className="text-xs font-medium">Searching knowledge base</span>
+                                        </div>
+                                        <p className="text-xs text-muted-foreground pl-4">
+                                          Looking for information about: {args?.question}
+                                        </p>
+                                      </div>
+                                    );
+                                  }
+                                }
+                                // Don't render completed tool calls
+                                return null;
+                              }
+                              
+                              return null;
+                            })}
+                          </>
                         )}
                       </div>
                     </div>

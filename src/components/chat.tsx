@@ -53,101 +53,119 @@ export function Chat({ initialQuestions }: ChatProps) {
 
   // Check if AI is currently thinking (waiting for response to begin)
   const isThinking = status === 'submitted' && (!messages.length || messages[messages.length - 1].role === 'user');
-
+  
   return (
     <div className="flex-1 flex flex-col">
               {/* Messages Area */}
               <ScrollArea className="flex-1">
           <div className="space-y-6 max-w-3xl mx-auto p-4">
             {messages.map((message, index) => {
-              if (message.content) {
+              const isLastMessage = index === messages.length - 1;
+              const isStreaming = status === 'streaming' && isLastMessage;
+              const messageRef = isLastMessage ? lastMessageRef : null;
+              
+              // Get all text content for copy functionality
+              const textContent = message.parts
+                .filter(part => part.type === 'text')
+                .map(part => (part.type === 'text' ? part.text : ''))
+                .join('');
 
-              return <div
-                key={message.id}
-                ref={index === messages.length - 1 ? lastMessageRef : null}
-                className={cn(
-                  "flex",
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                )}
-              >
+              return (
                 <div
+                  key={message.id}
+                  ref={messageRef}
                   className={cn(
-                    "rounded-lg px-4 py-3 max-w-[85%] shadow-sm relative group",
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground ml-12'
-                      : 'bg-muted mr-12'
+                    "flex",
+                    message.role === 'user' ? 'justify-end' : 'justify-start'
                   )}
                 >
-                  {/* Model indicator removed as it's not accurately tracking per-message models */}
-                  {message.role === 'assistant' && 
-                   !(status === 'streaming' && index === messages.length - 1) && (
-                    <button
-                      onClick={() => copyToClipboard(message.content, message.id, setCopiedMessageId)}
-                      className="absolute right-2 top-2 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity bg-muted hover:bg-muted/80"
-                      aria-label="Copy message"
-                      title={copiedMessageId === message.id ? "Copied!" : "Copy to clipboard"}
-                    >
-                      {copiedMessageId === message.id ? (
-                        <Check className="h-3.5 w-3.5 text-muted-foreground" />
-                      ) : (
-                        <Copy className="h-3.5 w-3.5 text-muted-foreground" />
-                      )}
-                    </button>
-                  )}
-                  <div className="text-sm">
-                    {message.role === 'user' ? (
-                    message.content
-                  ) : (
-                    <>
-                      <ReactMarkdown
-                        remarkPlugins={[directive, reactMarkdownRemarkDirective]}
-                        components={components}
+                  <div
+                    className={cn(
+                      "rounded-lg px-4 py-3 max-w-[85%] shadow-sm relative group",
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground ml-12'
+                        : 'bg-muted mr-12'
+                    )}
+                  >
+                    {/* Copy button for assistant messages */}
+                    {message.role === 'assistant' && !isStreaming && (
+                      <button
+                        onClick={() => copyToClipboard(textContent, message.id, setCopiedMessageId)}
+                        className="absolute right-2 top-2 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity bg-muted hover:bg-muted/80"
+                        aria-label="Copy message"
+                        title={copiedMessageId === message.id ? "Copied!" : "Copy to clipboard"}
                       >
-                        {message.content}
-                      </ReactMarkdown>
-                      {status === 'streaming' && index === messages.length - 1 && (
-                        <div className="flex justify-end mt-2">
-                          <Loader2 className="h-2 w-2 animate-spin text-muted-foreground" />
-                        </div>
+                        {copiedMessageId === message.id ? (
+                          <Check className="h-3.5 w-3.5 text-muted-foreground" />
+                        ) : (
+                          <Copy className="h-3.5 w-3.5 text-muted-foreground" />
+                        )}
+                      </button>
+                    )}
+                    
+                    <div className="text-sm">
+                      {/* Message rendering based on role */}
+                      {message.role === 'user' ? (
+                        <div>{textContent}</div>
+                      ) : (
+                        <>
+                          {message.parts.map((part, partIndex) => {
+                            // For debugging, log the part type
+                            console.log(`Part type: ${part.type}`, part);
+                            
+                            if (part.type === 'text') {
+                              return (
+                                <ReactMarkdown
+                                  key={`${message.id}-part-${partIndex}`}
+                                  remarkPlugins={[directive, reactMarkdownRemarkDirective]}
+                                  components={components}
+                                >
+                                  {part.text}
+                                </ReactMarkdown>
+                              );
+                            } else if (part.type === 'tool-invocation') {
+                              const toolCall = part.toolInvocation;
+                              
+                              // Only show tool call UI when it's in progress
+                              if (toolCall.state === 'call' || toolCall.state === 'partial-call') {
+                                if (toolCall.toolName === 'getInformation') {
+                                  const args = toolCall.args as { question: string };
+                                  return (
+                                    <div 
+                                      key={`${message.id}-tool-${partIndex}`}
+                                      className="bg-muted/60 rounded p-2 my-2 border border-muted"
+                                    >
+                                      <div className="flex items-center gap-2 mb-1">
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        <span className="text-sm font-medium">Searching knowledge base</span>
+                                      </div>
+                                      <p className="text-sm text-muted-foreground pl-6">
+                                        Looking for information about: {args?.question}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                              }
+                              // Don't render completed tool calls
+                              return null;
+                            }
+                            
+                            return null;
+                          })}
+                          
+                          {/* Streaming indicator */}
+                          {isStreaming && (
+                            <div className="flex justify-end mt-2">
+                              <Loader2 className="h-2 w-2 animate-spin text-muted-foreground" />
+                            </div>
+                          )}
+                        </>
                       )}
-                    </>
-                  )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              }
-
-              return <Fragment key={message.id}>
-                {message.parts?.map((part, index) => {
-                  switch (part.type) {
-                    case 'text': 
-                    return <p key={index}>{part.text}</p>
-                    case 'tool-invocation': 
-                    const toolCall = part.toolInvocation;
-                    switch (toolCall.toolName) {
-                      case 'getInformation': {
-                        const args = toolCall.args as { question: string };
-                        return (
-                          <div className="flex justify-start" key={index}>
-                            <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12">
-                              <div className="flex items-center gap-2 mb-1">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                <span className="text-sm font-medium">Searching knowledge base</span>
-                              </div>
-                              <p className="text-sm text-muted-foreground pl-6">
-                                Looking for information about: {args?.question}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      }
-                      
-                    }
-                  }
-                })}
-              </Fragment>
-            }
-            )}
+              );
+            })}
             {isThinking && (
               <div className="flex justify-start">
                 <div className="rounded-lg px-4 py-3 max-w-[85%] shadow-sm bg-muted mr-12 flex items-center gap-2">
