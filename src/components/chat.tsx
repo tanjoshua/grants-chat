@@ -110,8 +110,6 @@ export function Chat({ initialQuestions }: ChatProps) {
                       ) : (
                         <>
                           {message.parts.map((part, partIndex) => {
-                            // For debugging, log the part type
-                            console.log(`Part type: ${part.type}`, part);
                             
                             if (part.type === 'text') {
                               return (

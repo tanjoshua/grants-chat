@@ -16,22 +16,34 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
   };
   
   
-  export const findRelevantContent = async (userQuery: string) => {
-    const { db } = await import('@/db');
-    const { embeddings } = await import('@/db/schema');
-    const userQueryEmbedded = await generateEmbedding(userQuery);
-    const similarity = sql<number>`1 - (${cosineDistance(
-      embeddings.embedding,
-      userQueryEmbedded,
-    )})`;
-    const similarGuides = await db
-      .select({ name: embeddings.content, similarity })
-      .from(embeddings)
-      .where(gt(similarity, 0.5)) // Increased threshold for better precision
-      .orderBy(t => desc(t.similarity))
-      .limit(5); // Reduced from 4 to 3 for token efficiency
-    return similarGuides;
-  };
+export const findRelevantContent = async (userQuery: string) => {
+  const { db } = await import('@/db');
+  const { embeddings, documents } = await import('@/db/schema');
+  const userQueryEmbedded = await generateEmbedding(userQuery);
+  const similarity = sql<number>`1 - (${cosineDistance(
+    embeddings.embedding,
+    userQueryEmbedded,
+  )})`;
+  
+  const relevantDocuments = await db
+    .select({
+      name: documents.name,
+      content: documents.content,
+      similarity
+    })
+    .from(embeddings)
+    .innerJoin(documents, sql`${embeddings.documentId} = ${documents.id}`)
+    .where(gt(similarity, 0.5))
+    .orderBy(desc(similarity))
+    .limit(5);
+  
+  // Handle duplicates by keeping only first occurrence of each document
+  const uniqueDocuments = Array.from(
+    new Map(relevantDocuments.map(doc => [doc.name, doc])).values()
+  );
+  
+  return uniqueDocuments;
+};
 
 export const generateChunks = (input: string, chunkSize: number = 1500, overlap: number = 250): string[] => {
   try {
