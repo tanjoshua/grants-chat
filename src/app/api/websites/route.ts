@@ -3,7 +3,7 @@ import { generateText } from 'ai';
 import { db } from '@/db';
 import { documents } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { MINI_MODEL } from '@/config/ai';
+import { createModel, getModelById } from '@/config/ai';
 import { generateChunks, processChunksInBatches } from '@/lib/ai/embedding';
 
 export const maxDuration = 60;
@@ -37,8 +37,8 @@ async function fetchWebsiteContent(url: string): Promise<string> {
       .trim();
 
     const { text } = await generateText({
-      model: MINI_MODEL,
-      prompt: `Format the following data to be readable. Do not remove or add any information: ${textContent}`,
+      model: createModel(getModelById("gpt-4o")),
+      prompt: `Format the following content to enhance readability for an AI model. Do not remove or add any information: ${textContent}`,
     });
     
     return text;
