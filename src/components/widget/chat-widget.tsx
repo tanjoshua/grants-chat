@@ -29,8 +29,8 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
 
   // Scroll to bottom when new messages are added or updated
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [messages, isLoading]);
 
   // Auto-resize textarea when input changes
   useEffect(() => {

@@ -38,9 +38,9 @@ export function Chat({ initialQuestions }: ChatProps) {
   // Scroll to bottom when new messages are added or updated
   useEffect(() => {
     if (lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
+      lastMessageRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
-  }, [messages]);
+  }, [messages, status]);
 
   // Auto-resize textarea when input changes
   useEffect(() => {
