@@ -25,7 +25,7 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
       userQueryEmbedded,
     )})`;
     const similarGuides = await db
-      .select({ name: embeddings.content, similarity })
+      .select({ content: embeddings.content, similarity })
       .from(embeddings)
       .where(gt(similarity, 0.5)) // Increased threshold for better precision
       .orderBy(t => desc(t.similarity))
