@@ -3,17 +3,38 @@ import { Components } from 'react-markdown';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion";
 
 export function reactMarkdownRemarkDirective() {
+    // List of valid directive names that match your custom components
+    const validDirectives = [
+      'Accordion', 
+      'AccordionItem', 
+      'AccordionTrigger', 
+      'AccordionContent'
+    ];
+    
     // @ts-expect-error unknown type
     return (tree) => {
       visit(
         tree,
         ["textDirective", "leafDirective", "containerDirective"],
         (node) => {
-          node.data = {
-            hName: node.name,
-            hProperties: node.attributes,
-            ...node.data
-          };
+          // Only convert to HTML element if the directive name is in our valid list
+          if (validDirectives.includes(node.name)) {
+            node.data = {
+              hName: node.name,
+              hProperties: node.attributes,
+              ...node.data
+            };
+          } else {
+            // For invalid directives, render as text instead of HTML element
+            node.data = {
+              hName: 'span',
+              hProperties: { 
+                className: 'invalid-directive',
+                'data-directive-name': node.name 
+              },
+              ...node.data
+            };
+          }
           return node;
         }
       );
