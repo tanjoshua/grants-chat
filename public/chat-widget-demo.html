@@ -301,7 +301,7 @@
       <div class="tab-buttons">
         <button class="tab-button active" onclick="openTab(event, 'tab-button')">Button Widget</button>
         <button class="tab-button" onclick="openTab(event, 'tab-link')">Link Widget</button>
-        <button class="tab-button" onclick="openTab(event, 'tab-customize')">Customization</button>
+        <button class="tab-button" onclick="openTab(event, 'tab-customize')">Combined Widget</button>
       </div>
 
       <div id="tab-button" class="tab-content active">
@@ -347,19 +347,33 @@
       </div>
 
       <div id="tab-customize" class="tab-content">
-        <h3>Customization Options</h3>
+        <h3>Combined Widget Implementation</h3>
+        
+        <p>The combined widget provides both a floating button and in-content chat links with a single script. This is the recommended approach for most websites.</p>
+        
+        <h4>Basic Implementation</h4>
+        <pre><code>&lt;!-- Add this single script to get both button and links --&gt;
+&lt;script src="/api/embed-script?enableLinks=true"&gt;&lt;/script&gt;
 
-        <h4>Button Widget Parameters</h4>
-        <pre><code>// No customization parameters currently available</code></pre>
-
-        <h4>Link Widget Parameters</h4>
-        <pre><code>&lt;script src="/api/embed-script?mode=link
-  &text=Chat with us         // Default link text
-  &class=my-link-class"      // Additional CSS classes
+&lt;!-- Add this wherever you want chat links to appear --&gt;
+&lt;span data-ai-chat-link&gt;&lt;/span&gt;</code></pre>
+        
+        <h4>Available Parameters</h4>
+        <pre><code>&lt;script src="/api/embed-script?enableLinks=true
+  &text=Chat with us         // Default text for links
+  &class=my-link-class"      // Additional CSS classes for links
 &gt;&lt;/script&gt;</code></pre>
 
+        <h4>Benefits of Combined Approach</h4>
+        <ul>
+          <li>Single script to manage for easier maintenance</li>
+          <li>Consistent user experience between button and links</li>
+          <li>Reduced page load with only one script</li>
+          <li>Both interfaces share the same chat backend</li>
+        </ul>
+        
         <h4>Advanced Styling</h4>
-        <p>You can add your own CSS to override the default styles of the widget components:</p>
+        <p>The same styling options apply to both interfaces:</p>
         <pre><code>/* Button widget styling */
 #ai-chat-widget-button {
   background-color: purple;
@@ -386,9 +400,8 @@
     <p>© 2025 Singapore Government Grants (Demo). All rights reserved.</p>
   </footer>
 
-  <!-- Include both widget types for demo purposes -->
-  <script src="/api/embed-script"></script>
-  <script src="/api/embed-script?mode=link&text=Chat with our AI Assistant"></script>
+  <!-- Include combined widget script -->
+  <script src="/api/embed-script?enableLinks=true&text=Chat with our AI Assistant"></script>
 
   <!-- Tab functionality -->
   <script>

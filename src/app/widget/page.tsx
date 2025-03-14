@@ -53,6 +53,14 @@ export default async function WidgetPage({ searchParams }: { searchParams: Promi
             <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-x-auto text-sm mt-2">
               {`<span data-ai-chat-link></span>`}
             </pre>
+            
+            <h3 className="text-lg font-medium mb-2 mt-6">Option 3: Combined Approach (Recommended)</h3>
+            <p className="mb-4 text-muted-foreground">
+              Add both the floating button and chat links with a single script:
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-x-auto text-sm">
+              {`<script src="${process.env.VERCEL_URL || ''}/api/embed-script?enableLinks=true&text=Chat with us"></script>`}
+            </pre>
             <p className="mt-2 text-muted-foreground">
               <Link href="/chat-widget-demo.html" className="text-primary hover:underline" target="_blank">
                 View the comprehensive demo page
