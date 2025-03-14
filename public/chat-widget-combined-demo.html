@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Singapore Government Grants - Chat Widget Demo</title>
+  <style>
+    :root {
+      --primary-color: #1a5a96;
+      --primary-dark: #134b7c;
+      --accent-color: #e8f4ff;
+      --warning-bg: #fffbdd;
+      --warning-border: #ffdf5d;
+      --card-bg: #f9f9f9;
+      --border-color: #e5e7eb;
+      --code-bg: #f5f5f5;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--primary-color);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: 2rem 0 1rem;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    h4 {
+      font-size: 1.1rem;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .demo-notice {
+      background-color: var(--warning-bg);
+      padding: 1rem;
+      border-radius: 5px;
+      border-left: 4px solid var(--warning-border);
+      margin-bottom: 1.5rem;
+      margin-top: 2rem;
+      font-weight: bold;
+    }
+
+    .demo-box {
+      background-color: var(--accent-color);
+      padding: 1.5rem;
+      border-radius: 5px;
+      margin: 2rem 0;
+      border: 1px solid var(--primary-color);
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white !important;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-right: 1rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    code {
+      background-color: var(--code-bg);
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-family: Menlo, Monaco, 'Courier New', monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background-color: var(--code-bg);
+      padding: 1rem;
+      border-radius: 5px;
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+    }
+
+    .help-box {
+      border: 1px dashed var(--primary-color);
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 5px;
+      background-color: var(--accent-color);
+    }
+
+    .text-muted {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .tab-container {
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .tab-buttons {
+      display: flex;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .tab-button {
+      padding: 10px 15px;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .tab-button.active {
+      background-color: white;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--primary-color);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 15px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+      color: #666;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="demo-notice">
+    <p>⚠️ DEMO PAGE: This is a combined demonstration showing two ways to embed the AI chat assistant.</p>
+  </div>
+
+  <h1>Chat Assistant Integration Demo</h1>
+  <p style="text-align: center;">This demo shows two different ways to integrate the chat assistant into your website.</p>
+
+  <div class="grid-container">
+    <!-- Left side: Button Widget -->
+    <div class="card">
+      <h2>Option 1: Floating Button</h2>
+      <p>The floating button appears in the bottom-right corner of your website. Visitors can click it to open the chat in a popup.</p>
+      
+      <div class="help-box">
+        <h4>Implementation</h4>
+        <p>Add this script to your website:</p>
+        <pre><code>&lt;script src="/api/embed-script"&gt;&lt;/script&gt;</code></pre>
+        <p>That's it! The button will automatically appear in the bottom-right corner.</p>
+      </div>
+      
+      <div class="help-box">
+        <h4>When to Use</h4>
+        <ul>
+          <li>You want the chat to be available throughout the entire site</li>
+          <li>You prefer a non-intrusive, always-accessible option</li>
+          <li>You want a consistent UI element across all pages</li>
+        </ul>
+      </div>
+      
+      <h4>Result</h4>
+      <p>Look at the bottom-right corner of this page - you'll see a chat button there!</p>
+    </div>
+
+    <!-- Right side: Link Widget -->
+    <div class="card">
+      <h2>Option 2: Chat Links</h2>
+      <p>Chat links can be placed anywhere in your content. When clicked, they open the chat in a modal dialog.</p>
+      
+      <div class="help-box">
+        <h4>Implementation</h4>
+        <p>Add this script to your website:</p>
+        <pre><code>&lt;script src="/api/embed-script?mode=link&text=Chat with us"&gt;&lt;/script&gt;</code></pre>
+        <p>Then add this HTML wherever you want a chat link to appear:</p>
+        <pre><code>&lt;span data-ai-chat-link&gt;&lt;/span&gt;</code></pre>
+      </div>
+      
+      <div class="help-box">
+        <h4>Link Examples</h4>
+        <p>Standard link: <span data-ai-chat-link></span></p>
+        <p>Custom text: <span data-ai-chat-link>Get grant information</span></p>
+        <p>Button style: <span data-ai-chat-link class="btn">Open Chat Assistant</span></p>
+      </div>
+      
+      <h4>When to Use</h4>
+      <ul>
+        <li>You want to place chat links in specific sections of content</li>
+        <li>You want to customize the appearance of chat triggers</li>
+        <li>You want to provide context-specific chat assistance</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Implementation Details</h2>
+  
+  <div class="tab-container">
+    <div class="tab-buttons">
+      <button class="tab-button active" onclick="openTab(event, 'tab-button')">Button Widget</button>
+      <button class="tab-button" onclick="openTab(event, 'tab-link')">Link Widget</button>
+      <button class="tab-button" onclick="openTab(event, 'tab-customize')">Customization</button>
+    </div>
+    
+    <div id="tab-button" class="tab-content active">
+      <h3>Floating Button Implementation</h3>
+      <p>The floating button widget creates a fixed-position button in the corner of your website. When clicked, it opens an iframe containing the chat interface.</p>
+      
+      <h4>Basic Implementation</h4>
+      <pre><code>&lt;!-- Add this to your website's HTML --&gt;
+&lt;script src="/api/embed-script"&gt;&lt;/script&gt;</code></pre>
+      
+      <h4>How It Works</h4>
+      <ol>
+        <li>The script creates a floating button in the bottom-right corner</li>
+        <li>When clicked, it opens an iframe with the chat interface</li>
+        <li>The chat interface communicates with the parent window using postMessage</li>
+        <li>The button can be clicked again to hide the chat</li>
+      </ol>
+    </div>
+    
+    <div id="tab-link" class="tab-content">
+      <h3>Link Widget Implementation</h3>
+      <p>The link widget allows you to place chat triggers anywhere in your content. When clicked, they open a modal dialog containing the chat interface.</p>
+      
+      <h4>Basic Implementation</h4>
+      <pre><code>&lt;!-- Add this to your website's HTML --&gt;
+&lt;script src="/api/embed-script?mode=link"&gt;&lt;/script&gt;
+
+&lt;!-- Add this wherever you want a chat link to appear --&gt;
+&lt;span data-ai-chat-link&gt;&lt;/span&gt;</code></pre>
+      
+      <h4>Customizing Link Text</h4>
+      <pre><code>&lt;!-- Custom text in the markup --&gt;
+&lt;span data-ai-chat-link&gt;Ask about grants&lt;/span&gt;
+
+&lt;!-- Or set default text in the script --&gt;
+&lt;script src="/api/embed-script?mode=link&text=Ask about grants"&gt;&lt;/script&gt;</code></pre>
+      
+      <h4>Styling as a Button</h4>
+      <pre><code>&lt;!-- Add your own classes --&gt;
+&lt;span data-ai-chat-link class="btn primary-btn"&gt;Chat Now&lt;/span&gt;</code></pre>
+    </div>
+    
+    <div id="tab-customize" class="tab-content">
+      <h3>Customization Options</h3>
+      
+      <h4>Button Widget Parameters</h4>
+      <pre><code>// No customization parameters currently available</code></pre>
+      
+      <h4>Link Widget Parameters</h4>
+      <pre><code>&lt;script src="/api/embed-script?mode=link
+  &text=Chat with us         // Default link text
+  &title=Grant Assistant     // Dialog title
+  &class=my-link-class"      // Additional CSS classes
+&gt;&lt;/script&gt;</code></pre>
+      
+      <h4>Advanced Styling</h4>
+      <p>You can add your own CSS to override the default styles of the widget components:</p>
+      <pre><code>/* Button widget styling */
+#ai-chat-widget-button {
+  background-color: purple;
+  width: 60px;
+  height: 60px;
+}
+
+/* Link widget styling */
+.ai-chat-link {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.ai-chat-dialog {
+  border: 2px solid gold;
+}</code></pre>
+    </div>
+  </div>
+
+  <h2>Common Use Cases</h2>
+  
+  <div class="demo-box">
+    <h3>Government Services Website</h3>
+    <p>For a government services website, you can combine both approaches:</p>
+    <ul>
+      <li>Use the floating button for site-wide availability</li>
+      <li>Add contextual links in specific sections where users might need help</li>
+    </ul>
+    
+    <div class="help-box">
+      <h4>Example: Grant Application Section</h4>
+      <p>To qualify for the Productivity Solutions Grant (PSG), your business must meet several criteria including being registered in Singapore and having at least 30% local shareholding.</p>
+      <p>Not sure if you qualify? <span data-ai-chat-link>Check your eligibility</span> with our assistant.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>This demo page shows how to integrate the chat assistant in different ways. Both the button and link approaches use the same underlying chat technology.</p>
+    <p>© 2025 askHugh.ai (Demo). All rights reserved.</p>
+  </footer>
+
+  <!-- Include both widget types for demo purposes -->
+  <script src="/api/embed-script"></script>
+  <script src="/api/embed-script?mode=link&text=Chat with our AI Assistant&title=Singapore Grants AI Assistant"></script>
+  
+  <!-- Tab functionality -->
+  <script>
+    function openTab(evt, tabId) {
+      // Hide all tab contents
+      var tabContents = document.getElementsByClassName('tab-content');
+      for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].classList.remove('active');
+      }
+      
+      // Remove active class from all tab buttons
+      var tabButtons = document.getElementsByClassName('tab-button');
+      for (var i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove('active');
+      }
+      
+      // Show the selected tab and mark its button as active
+      document.getElementById(tabId).classList.add('active');
+      evt.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+
+</html>

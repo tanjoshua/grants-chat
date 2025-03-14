@@ -13,9 +13,10 @@ import directive from "remark-directive";
 interface ChatWidgetProps {
   isOpen: boolean;
   onClose: () => void;
+  hideHeader?: boolean;
 }
 
-export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
+export function ChatWidget({ isOpen, onClose, hideHeader = false }: ChatWidgetProps) {
   const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
     api: "/api/chat",
   });
@@ -50,13 +51,15 @@ export function ChatWidget({ isOpen, onClose }: ChatWidgetProps) {
 
   return (
     <div className="h-full w-full flex flex-col" >
-      {/* Header */}
-      <header className="flex items-center justify-between p-2 border-b bg-gray-50 dark:bg-gray-950 dark:border-gray-800 shrink-0">
-        <p className="text-sm font-medium">askHugh.ai</p>
-        <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
-          <X className="h-3 w-3" />
-        </Button>
-      </header>
+      {/* Header - conditionally rendered */}
+      {!hideHeader && (
+        <header className="flex items-center justify-between p-2 border-b bg-gray-50 dark:bg-gray-950 dark:border-gray-800 shrink-0">
+          <p className="text-sm font-medium">askHugh.ai</p>
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
+            <X className="h-3 w-3" />
+          </Button>
+        </header>
+      )}
       
       {/* Chat container - Takes all available space between header and footer */}
       <div className="flex-1 overflow-y-auto" style={{ minHeight: 0 }}>

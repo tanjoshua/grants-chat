@@ -3,7 +3,12 @@
 import { useState, useEffect } from 'react'
 import { ChatWidget } from './chat-widget'
 
-export function ChatWidgetContainer() {
+interface ChatWidgetContainerProps {
+  hideHeader?: boolean;
+  height?: string;
+}
+
+export function ChatWidgetContainer({ hideHeader = false, height = '500px' }: ChatWidgetContainerProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isIframe, setIsIframe] = useState(false)
 
@@ -33,8 +38,12 @@ export function ChatWidgetContainer() {
   }
 
   return (
-    <div className="w-full overflow-hidden h-[500px]">
-      <ChatWidget isOpen={isOpen || isIframe} onClose={handleClose} />
+    <div className="w-full overflow-hidden" style={{ height }}>
+      <ChatWidget 
+        isOpen={isOpen || isIframe} 
+        onClose={handleClose}
+        hideHeader={hideHeader}
+      />
     </div>
   )
 }
