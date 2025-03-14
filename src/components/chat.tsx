@@ -20,7 +20,16 @@ interface ChatProps {
 }
 
 export function Chat({ initialQuestions }: ChatProps) {
+  // Start with default model to avoid hydration mismatch
   const [selectedModelId, setSelectedModelId] = useState<string>(DEFAULT_MODEL_ID);
+  
+  // Load from localStorage only after component mounts (client-side only)
+  useEffect(() => {
+    const savedModel = localStorage.getItem('preferredModel');
+    if (savedModel) {
+      setSelectedModelId(savedModel);
+    }
+  }, []);
   
   const { messages, input, handleInputChange, handleSubmit, append, status } = useChat({
     api: "/api/chat",
@@ -225,6 +234,8 @@ export function Chat({ initialQuestions }: ChatProps) {
             onModelChange={(modelId) => {
               if (modelId !== selectedModelId) {
                 setSelectedModelId(modelId);
+                // Save user preference to localStorage
+                localStorage.setItem('preferredModel', modelId);
               }
             }}
           />
